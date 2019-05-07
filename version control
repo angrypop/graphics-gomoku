@@ -1,0 +1,6 @@
+1.GitHub Commits
+  See https://guides.github.com/ for official guides.
+  A successful commit is made when you complete a new function.
+  Commit to master branch directly, except you want to overwrite other's code.
+  All codes uploaded must be compilable.
+  New function must be mentioned in the commit description, but you may leave it blank or just type "bugs fixed" or something else for minor modification.
