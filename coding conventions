@@ -1,0 +1,25 @@
+1.Naming
+  Name of variables and functions shall be an English word or combination of several words.
+  Capitalize first letter(s), but with exceptions: all upper case for constants and all lower case for temporary variables.
+  If the name is too long (approximately 20 letters), abbreviate it with common abbreviations.
+  If a variable is global, add prefix 'g'.
+  
+  Examples:
+    Recommended:  Count SaveGame InitializeGame/InitGame CalculateAverageScore/CalAvgSco gTotalScore PI temp i
+    Poor:         kk shijian svgm Calculate_Score SetGlobalGameModeAsAIvsAI
+
+2.Comments
+  Write comments with characters within ASCII table only.(Mainly English alphabet, numbers, and commmonly used punctuations)
+  If commenting in English is challenging for you, use PinYin.
+  Use /* */ instead of //. (Some old C standards and compilers don't support)
+  
+  Examples:
+    /* ... */
+    /*
+      ...
+      ...
+      ...
+    */
+
+3.Style
+  Visual Studio's default code style for C/C++.
