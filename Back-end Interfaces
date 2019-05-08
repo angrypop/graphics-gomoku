@@ -1,1 +1,6 @@
-TODO: add data structures and interfaces
+struct Board {
+	unsigned int Turn;
+	int BoardState[16][16];
+};
+
+int JudgeWin();
