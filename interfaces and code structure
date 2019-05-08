@@ -1,0 +1,28 @@
+1.Functions
+Function prototypes (declarations) should be gathered together, with comments on its parameters and use.
+Declare funtions in .h files, and implement them in .c files.
+
+2.Code Structure
+precompiled files -> macros and constants -> global variables -> function prototypes -> Main() function -> function implements
+Each part seperated with a blank line.
+Do NOT use "pch.h" since its a VS property.
+
+Example:
+
+  #include "someheaderfile.h"
+
+  #define PI 3.14159
+  #define swap(a,b) {double swaptemp; swaptemp = a; a = b; b = swaptemp;}
+  const int MAXNUM = 10000
+
+  double gTotalScore;
+
+  int fun(); /* ... */
+
+  int main(){
+    return 0;
+  }
+  
+  int fun(){
+    ...
+  }
