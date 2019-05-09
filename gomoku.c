@@ -3,7 +3,7 @@
 	Function definitions go here.
 */
 
-#ifndef PRAGMAONCE #define PRAGMAONCE
+#ifndef PRAGMAONCE_GOMOKU.C #define PRAGMAONCE_GOMOKU.C
 #include "gomoku.h"
 
 char CheckWin(Board B) {
