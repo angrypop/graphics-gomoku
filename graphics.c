@@ -2008,8 +2008,9 @@ double ScaleYInches(int y)/*y coordinate from pixels to inches*/
 
 // Added Function by Steven Chen
 // Latest Date: 2019.05.04
-// Notice: Declaration is not provided by the graphics.c/.h
-// To call the function, declare the function in your own .c file first
+// Notice: Declarations are provided by the extrafunc.h
+//		   put the extrafunc.h in the Source Files
+//		   and include "extrafunc.h" before using the functions
 
 //Function : ShowBmp
 //Arguments:
