@@ -3,7 +3,8 @@
 	Function prototypes and data structures go here.
 */
 
-#ifndef PRAGMAONCE_GOMOKU.H #define PRAGMAONCE_GOMOKU.H
+#ifndef PRAGMAONCE_GOMOKU_H
+#define PRAGMAONCE_GOMOKU_H
 
 #define BOARDSIZE 15
 
