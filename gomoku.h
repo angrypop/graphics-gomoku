@@ -6,6 +6,9 @@
 #ifndef PRAGMAONCE_GOMOKU_H
 #define PRAGMAONCE_GOMOKU_H
 
+#include "string.h"
+#include "malloc.h"
+
 #define BOARDSIZE 15
 
 struct Board {
@@ -17,6 +20,18 @@ struct Board {
 	*/
 };
 typedef struct Board Board;
+
+struct Position {
+	int x, y;
+};
+typedef struct Position Position;
+
+struct LinkedListNode {
+	Board Board;
+	struct LinkedListNode * Pre;
+	struct LinkedListNode * Next;
+};
+typedef struct LinkedListNode LinkedListNode;
 
 /*
 	If a function uses pointer to a board as its parameter, it will modify the board. 
@@ -44,4 +59,24 @@ void SetPiece(Board *B, int TagX, int TagY, char Side);
 	Return		: void
 */
 
+LinkedListNode * NewLinkedList();
+/*
+	Create a new linked list, and return the pointer of its head node.
+	Arguments	: void
+	Return		: A pointer pointing to the head nod
+*/
+
+void InsertNode(LinkedListNode * Head, Board B);
+/*
+	Insert a node to the tail of a linked list.
+	Arguments	: A linked list (pointer of its head node), a Board
+	Return		: void
+*/
+
+void DeleteNode(LinkedListNode * Head);
+/*
+	Delete the tail node of a linked list.
+	Arguments	: void
+	Return		: void
+*/
 #endif

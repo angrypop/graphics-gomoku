@@ -53,4 +53,29 @@ void SetPiece(Board *B, int TagX, int TagY, char Side) {
 	B->Turn++;
 }
 
+LinkedListNode * NewLinkedList() {
+	LinkedListNode * Head = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+	Head->Pre = NULL;
+	Head->Next = NULL;
+	return Head;
+}
+
+void InsertNode(LinkedListNode * Head, Board B) {
+	LinkedListNode * Ptr = Head;
+	while (Ptr->Next != NULL) Ptr = Ptr->Next;
+	LinkedListNode * NewNode = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+	NewNode->Board = B;
+	NewNode->Pre = Ptr;
+	NewNode->Next = NULL;
+	Ptr->Next = NewNode;
+}
+
+void DeleteNode(LinkedListNode * Head) {
+	LinkedListNode * Ptr = Head;
+	while (Ptr->Next != NULL) Ptr = Ptr->Next;
+	LinkedListNode * Pre = Ptr->Pre;
+	free(Ptr);
+	Pre->Next = NULL;
+}
+
 #endif
