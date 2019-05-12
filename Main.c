@@ -14,13 +14,7 @@
 #include <ole2.h>
 #include <ocidl.h>
 #include <winuser.h>
-
-//Macro for GameStatus
-#define QUIT -1
-#define UNKNOWN 0
-#define WIN 1
-#define LOSE 2
-#define SUREENDER 3
+#include "Main.h"
 
 void Main()
 {
