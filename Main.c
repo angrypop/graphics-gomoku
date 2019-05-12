@@ -21,7 +21,7 @@ void Main()
 	// The loop is to deal with 'playing again '
 	while (TRUE)
 	{
-		int GameStatus = UNKNOWN;
+		int GameStatus = GAME_UNKNOWN;
 		bool PlayAgain = FALSE;
 
 		//  HomePage function loads the home page
@@ -35,13 +35,13 @@ void Main()
 
 		// GamePage function loads the game page
 		// and return the final game status of the game
-		if (GameStatus != QUIT)
+		if (GameStatus != GAME_QUIT)
 			GameStatus = GamePage();
 
 		// The EndGamePage function shows End Game Pagevaries based on different game statuses
 		// and returns TRUE if the user chooses to play again 
 		// returns FALSE otherwise
-		if (GameStatus == QUIT)
+		if (GameStatus == GAME_QUIT)
 			QuitGamePage();
 		else
 			PlayAgain = EndGamePage(GameStatus);

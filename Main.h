@@ -18,8 +18,8 @@
 #include <winuser.h>
 
 //Macro for GameStatus
-#define QUIT -1
-#define UNKNOWN 0
-#define WIN 1
-#define LOSE 2
-#define SUREENDER 3
+#define GAME_QUIT -1
+#define GAME_UNKNOWN 0
+#define GAME_WIN 1
+#define GAME_LOSE 2
+#define GAME_SURRENDER 3
