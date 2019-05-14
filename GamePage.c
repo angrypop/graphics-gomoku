@@ -60,18 +60,18 @@ static void AbsDelay(int interval);
 
 
 // to do
-// ÆåÅÌ
-// Ö÷Òª¹¦ÄÜÊµÏÖ£ºÂä×Ó£¨Í¸Ã÷ÌùÍ¼£©
+// æ£‹ç›˜
+// ä¸»è¦åŠŸèƒ½å®ç°ï¼šè½å­ï¼ˆé€æ˜è´´å›¾ï¼‰
 
-// ĞÅÏ¢Çø
-// Ö÷Òª¹¦ÄÜÊµÏÖ£º»ØºÏÊı£¬¾ÖÃæ²ÎÊı£¬ºÚ°×³Ö·½£¬µ±Ç°»ØºÏ×ßÆåÈË
+// ä¿¡æ¯åŒº
+// ä¸»è¦åŠŸèƒ½å®ç°ï¼šå›åˆæ•°ï¼Œå±€é¢å‚æ•°ï¼Œé»‘ç™½æŒæ–¹ï¼Œå½“å‰å›åˆèµ°æ£‹äºº
 
-// °´Å¥Çø
-// »ÚÆå£¬ £¨¸´ÅÌ?£©£¬ Í¶½µ
+// æŒ‰é’®åŒº
+// æ‚”æ£‹ï¼Œ ï¼ˆå¤ç›˜?ï¼‰ï¼Œ æŠ•é™
 
-// ²Ëµ¥Çø
-// °´ÏÂ²Ëµ¥¼üºóÏÔÊ¾¸ü¶à°´¼ü£¬²¢½«²Ëµ¥¶ş×Ö¸ÄÎªÊÕÆğ²Ëµ¥
-// ÉèÖÃ£¬°ïÖú£¬·µ»Ø£¬±£´æ½ØÍ¼£¬ ±£´æÓÎÏ·, QUIT
+// èœå•åŒº
+// æŒ‰ä¸‹èœå•é”®åæ˜¾ç¤ºæ›´å¤šæŒ‰é”®ï¼Œå¹¶å°†èœå•äºŒå­—æ”¹ä¸ºæ”¶èµ·èœå•
+// è®¾ç½®ï¼Œå¸®åŠ©ï¼Œè¿”å›ï¼Œä¿å­˜æˆªå›¾ï¼Œ ä¿å­˜æ¸¸æˆ, QUIT
 
 //to do :
 //1. AI
@@ -122,8 +122,9 @@ static void InitGamePage()
 	// if the last function doesn't close the window
 	// close previous window here
 	double ix, iy;
-	ix = ScaleXInches(GAME_PAGE_WIDTH);
-	iy = ScaleYInches(GAME_PAGE_HEIGHT);
+	//temp
+	ix = 30;
+	iy = 30;
 	SetWindowSize(ix, iy);
 	InitGraphics();
 
@@ -132,15 +133,15 @@ static void InitGamePage()
 
 	// initialize the information 
 	if (Setting.UserColor == UC_BLACK)
-		Info.side = "°×Æå£º AI   ºÚÆå£º Äã  ";
+		Info.side = "ç™½æ£‹ï¼š AI   é»‘æ£‹ï¼š ä½   ";
 	else
-		Info.side = "°×Æå£º Äã   ºÚÆå£º AI ";
-	Info.turn = "µ±Ç°»ØºÏÊı£º 0 ";
-	Info.argument = "µ±Ç°²ÎÊı£º 0.5 ";
+		Info.side = "ç™½æ£‹ï¼š ä½    é»‘æ£‹ï¼š AI ";
+	Info.turn = "å½“å‰å›åˆæ•°ï¼š 0 ";
+	Info.argument = "å½“å‰å‚æ•°ï¼š 0.5 ";
 	if (Setting.FirstMove == FM_BLACK)
-		Info.now = "µ±Ç°×ßÆå£º ºÚÆå";
+		Info.now = "å½“å‰èµ°æ£‹ï¼š é»‘æ£‹";
 	else
-		Info.now = "µ±Ç°×ßÆå£º °×Æå";
+		Info.now = "å½“å‰èµ°æ£‹ï¼š ç™½æ£‹";
 
 	if (Setting.UserColor == Setting.FirstMove)
 		UserTurn = TRUE;
@@ -150,8 +151,8 @@ static void InitGamePage()
 
 	// initialize the gui
 	InitGUI();
-	DefineColor("LightWood", 250, 201, 124);
-	DefineColor("DarkWood", 238, 168, 99);
+	DefineColor("LightWood", 0.98, 0.788, 0.486);
+	DefineColor("DarkWood", 0.933, 0.6588, 0.388);
 
 	// initialize the linked list tail
 	LLTail = LLHead;
@@ -255,11 +256,11 @@ static void DrawButtons()
 	button(GenUIID(GP_ID_UNDO),
 		ScaleXInches(CHESSBOARD_WIDTH), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3 / 5),
 		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6),
-		"»ÚÆå");
+		"æ‚”æ£‹");
 	button(GenUIID(GP_ID_SURRENDER),
 		ScaleXInches(CHESSBOARD_WIDTH), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2 / 5),
 		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6),
-		"Í¶½µ");
+		"æŠ•é™");
 
 }
 static void MouseEventProcess(int x, int y, int mbutton, int event)
@@ -269,7 +270,7 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 	//check buttons
 	if (button(GenUIID(GP_ID_UNDO),
 		ScaleXInches(CHESSBOARD_WIDTH), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3 / 5),
-		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6),"»ÚÆå"))
+		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6),"æ‚”æ£‹"))
 	{
 		//UNDO the last step only if it is the user's turn
 		if (UserTurn)
@@ -280,7 +281,7 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 	}
 	else if (button(GenUIID(GP_ID_SURRENDER),
 		ScaleXInches(CHESSBOARD_WIDTH), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2 / 5),
-		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6),"Í¶½µ"))
+		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6),"æŠ•é™"))
 	{
 		GameStatus = GAME_SURRENDER;
 	}
@@ -350,23 +351,23 @@ static void UpdateInfo()
 {
 	// Update UserColor
 	if (Setting.UserColor == UC_BLACK)
-		Info.side = "°×Æå£º AI   ºÚÆå£º Äã  ";
+		Info.side = "ç™½æ£‹ï¼š AI   é»‘æ£‹ï¼š ä½   ";
 	else
-		Info.side = "°×Æå£º Äã   ºÚÆå£º AI ";
+		Info.side = "ç™½æ£‹ï¼š ä½    é»‘æ£‹ï¼š AI ";
 	//Update Turns
-	Info.turn = Concat("µ±Ç°»ØºÏÊı£º  ", IntegerToString(B.Turn));
+	Info.turn = Concat("å½“å‰å›åˆæ•°ï¼š  ", IntegerToString(B.Turn));
 	//Update argument
-	//Info.argument = Concat("µ±Ç°²ÎÊı£º  ", IntegerToString());
+	//Info.argument = Concat("å½“å‰å‚æ•°ï¼š  ", IntegerToString());
 	//Update current turn
 	if (UserTurn)
 	{
 		switch (Setting.UserColor)
 		{
 		case UC_BLACK:
-			Info.now = "µ±Ç°×ßÆå£º ºÚÆå";
+			Info.now = "å½“å‰èµ°æ£‹ï¼š é»‘æ£‹";
 			break;
 		case UC_WHITE:
-			Info.now = "µ±Ç°×ßÆå£º °×Æå";
+			Info.now = "å½“å‰èµ°æ£‹ï¼š ç™½æ£‹";
 			break;
 		}
 	}
@@ -375,10 +376,10 @@ static void UpdateInfo()
 		switch (Setting.UserColor)
 		{
 		case UC_BLACK:
-			Info.now = "µ±Ç°×ßÆå£º °×Æå";
+			Info.now = "å½“å‰èµ°æ£‹ï¼š ç™½æ£‹";
 			break;
 		case UC_WHITE:
-			Info.now = "µ±Ç°×ßÆå£º ºÚÆå";
+			Info.now = "å½“å‰èµ°æ£‹ï¼š é»‘æ£‹";
 			break;
 		}
 	}
