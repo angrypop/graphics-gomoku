@@ -22,14 +22,11 @@
 #include "imgui.h"
 #include "extrafunc.h"
 
-static double winwidth, winheight;  
-static int    show_more_buttons = 0; 
+#ifndef static double winwidth, winheight;
+#define static double winwidth, winheight; 
+#define static int    show_more_buttons = 0; 
 
-void DisplayClear(void);
-void startTimer(int id, int timeinterval);
-void display(void);
-void MouseEventProcess(int x, int y, int button, int event);
-void DrawButtons(void);
+#include "HomePage.h"
 
 void MouseEventProcess(int x, int y, int button, int event)
 {
@@ -40,7 +37,7 @@ void MouseEventProcess(int x, int y, int button, int event)
 void display()
 {
 	DisplayClear();
-	ShowBmp("C:\\Users\\Lenovo\\Desktop\\HomePageBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
+	ShowBmp("HomePageBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
 	DrawButtons();
 }
 
@@ -102,9 +99,10 @@ bool HomePage()
 	registerMouseEvent(MouseEventProcess);
 
 	StartBatchDraw();
-	ShowBmp("C:\\Users\\Lenovo\\Desktop\\HomePageBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
+	ShowBmp("HomePageBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
 	EndBatchDraw();
 	
 	DrawButtons();	
 }
 
+#endif
