@@ -10,6 +10,8 @@
 #define DIMENSION 13
 #define SEARCHDEPTH 4
 #define DETECTDISTANCE 1
+#define HUMANSIDE 'W'
+#define AISIDE 'B'
 
 struct DecisionTreeNode {
 	Board Board;
@@ -26,6 +28,7 @@ double ShapeWeight[DIMENSION + 1];
 /* 
 	(Below denote A for friendly pieces, ? for blank positions)
 	TERM	SHAPE		NO.
+	"GMK"	AAAAA		0
 	"Huo 4"	?AAAA?		1
 	"Si 4"	?AAAA		2
 			A?AAA		3
