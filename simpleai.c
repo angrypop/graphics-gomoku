@@ -111,7 +111,7 @@ double Evaluate(Board B, char Side) {
 						B.BoardStatus[x + 5 * dx][y + 5 * dy] == 'N' &&
 						B.BoardStatus[x + 6 * dx][y + 6 * dy] == 'N' &&
 						B.BoardStatus[x + 7 * dx][y + 7 * dy] == 'N'
-						)/* Si 3, ???AA??? */
+						)/* Huo 2, ???AA??? */
 						Score += ShapeWeight[10];
 					else if (x + 4 * dx <= BOARDSIZE && x + 4 * dx >= 1 && y + 4 * dy <= BOARDSIZE && y + 4 * dy >= 1 &&
 						B.BoardStatus[x + 0 * dx][y + 0 * dy] == 'N' &&
@@ -147,4 +147,71 @@ double Evaluate(Board B, char Side) {
 	return Score;
 }
 
+Position GetBestMove(Board B, char Side) {
+	DTNode Root;
+	Root.IsMaxMin = 1;
+	Root.Side = Side;
+	Root.Value = -INF;
+	Root.Board = B;
+	Root.FatherValue = INF;
+	DFS(0, &Root);
+	return Root.BestMove;
+}
+
+static double DFS(int Layor, DTNode *CurNode) {
+	
+	if (Layor == SEARCHDEPTH) {
+		char OppoSide = CurNode->Side == 'B' ? 'W' : 'B';
+		return Evaluate(CurNode->Board, CurNode->Side) - Evaluate(CurNode->Board, OppoSide);
+		/* My evaluation - Opponent's evaluation */
+	}
+	int x = 1, y = 1;
+	for (x = 1; x <= BOARDSIZE; x++) {
+		for (y = 1; y <= BOARDSIZE; y++) {
+			if (CurNode->Board.BoardStatus[x][y] != 'N') continue;/* Invalid Move */
+			
+			int dx, dy, t, IsPieceNearby = 0;
+			for (dx = -1; dx <= 1; dx++) {
+				for (dy = -1; dy <= 1; dy++) {
+					for (t = 1; t <= DETECTDISTANCE; t++) {
+						if (x + t * dx <= BOARDSIZE && x + t * dx >= 1 && y + t * dy <= BOARDSIZE && y + t * dy >= 1 &&
+							CurNode->Board.BoardStatus[x + t * dx][y + t * dy] != 'N') {
+							IsPieceNearby = 1;
+							break;
+						}
+					}
+				}
+			}
+			if (!IsPieceNearby) continue; /* Remote point, ignore */
+
+			DTNode NewNode = *CurNode;
+			NewNode.Side = CurNode->Side == 'B' ? 'W' : 'B';
+			NewNode.Board.BoardStatus[x][y] = CurNode->Side;
+			NewNode.IsMaxMin = !CurNode->IsMaxMin;
+			if (NewNode.IsMaxMin) NewNode.Value = -INF;
+			else NewNode.Value = INF;
+			NewNode.FatherValue = CurNode->Value;/* AlphaBeta */
+
+			double NewValue = DFS(Layor + 1, &NewNode);
+
+			if (CurNode->IsMaxMin) {
+				if (NewValue > CurNode->Value) {
+					CurNode->Value = NewValue;
+					CurNode->BestMove.x = x;
+					CurNode->BestMove.y = y;
+				}
+				if (NewValue > CurNode->FatherValue) return NewValue; /* AlphaBeta */
+			}
+			else {
+				if (NewValue < CurNode->Value) {
+					CurNode->Value = NewValue;
+					CurNode->BestMove.x = x;
+					CurNode->BestMove.y = y;
+				}
+				if (NewValue < CurNode->FatherValue) return NewValue; /* AlphaBeta */
+			}
+		}
+	}
+	return CurNode->Value;
+}
 #endif
