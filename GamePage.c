@@ -74,13 +74,13 @@ static void AbsDelay(int interval);
 // …Ë÷√£¨∞Ô÷˙£¨∑µªÿ£¨±£¥ÊΩÿÕº£¨ ±£¥Ê”Œœ∑, QUIT
 
 //to do :
-//1. AI
 //3. Mouse operation
+//4. the menu
 
 int GamePage(void)
 {
 	InitGamePage();
-
+	
 	while (TRUE)
 	{
 		GameStatus = GAME_UNKNOWN;
@@ -90,11 +90,11 @@ int GamePage(void)
 
 		if (!UserTurn)
 		{
-			// AI place the chessman
-			// ********************************* todo
+			Position BestMove = GetBestMove(B, (Setting.UserColor == UC_BLACK) ? 'W' : 'B');
+			SetPiece(&B, BestMove.x, BestMove.y, (Setting.UserColor == UC_BLACK) ? 'W' : 'B');
 			UserTurn = TRUE;
 		}
-
+		
 		//absolute delay
 		AbsDelay(16);
 
@@ -122,7 +122,6 @@ static void InitGamePage()
 	// if the last function doesn't close the window
 	// close previous window here
 	double ix, iy;
-	//temp
 	ix = 30;
 	iy = 30;
 	SetWindowSize(ix, iy);
@@ -172,7 +171,7 @@ static void Draw()
 static void DrawChessboard()
 {
 	ShowBmp(".\\pictures\\Checkboard.bmp",
-		0, 0, ScaleXInches(CHESSBOARD_WIDTH), ScaleYInches(CHESSBOARD_HEIGHT), SRCCOPY);
+		0, 0, CHESSBOARD_WIDTH, CHESSBOARD_HEIGHT, SRCCOPY);
 
 	int i, j;
 	for (i = 1; i <= BOARDSIZE; i++)
@@ -190,58 +189,58 @@ static void DrawWhite(int i, int j)
 {
 	double ix, iy;
 	// ix, iy is the coordinates of the left-bottom of the chessman
-	ix = ScaleXInches(CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2);
-	iy = ScaleYInches(CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2);
+	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2;
+	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2;
 
 	// Show with transparent background
 	ShowBmp(".\\pictures\\WhiteChessman.bmp",
-		ix, iy, ScaleXInches(CHESSMAN_SIZE), ScaleYInches(CHESSMAN_SIZE), SRCINVERT);
+		ix, iy, CHESSMAN_SIZE, CHESSMAN_SIZE, SRCINVERT);
 	ShowBmp(".\\pictures\\WhiteChessmanMask.bmp",
-		ix, iy, ScaleXInches(CHESSMAN_SIZE), ScaleYInches(CHESSMAN_SIZE), SRCAND);
+		ix, iy, CHESSMAN_SIZE, CHESSMAN_SIZE, SRCAND);
 	ShowBmp(".\\pictures\\WhiteChessman.bmp",
-		ix, iy, ScaleXInches(CHESSMAN_SIZE), ScaleYInches(CHESSMAN_SIZE), SRCINVERT);
+		ix, iy, CHESSMAN_SIZE, CHESSMAN_SIZE, SRCINVERT);
 
 }
 static void DrawBlack(int i, int j)
 {
 	double ix, iy;
 	// ix, iy is the coordinates of the left-bottom of the chessman
-	ix = ScaleXInches(CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2);
-	iy = ScaleYInches(CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2);
+	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2;
+	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2;
 
 	// Show with transparent background
 	ShowBmp(".\\pictures\\BlackChessman.bmp",
-		ix, iy, ScaleXInches(CHESSMAN_SIZE), ScaleYInches(CHESSMAN_SIZE), SRCINVERT);
+		ix, iy, CHESSMAN_SIZE, CHESSMAN_SIZE, SRCINVERT);
 	ShowBmp(".\\pictures\\BlackChessmanMask.bmp",
-		ix, iy, ScaleXInches(CHESSMAN_SIZE), ScaleYInches(CHESSMAN_SIZE), SRCAND);
+		ix, iy, CHESSMAN_SIZE, CHESSMAN_SIZE, SRCAND);
 	ShowBmp(".\\pictures\\BlackChessman.bmp",
-		ix, iy, ScaleXInches(CHESSMAN_SIZE), ScaleYInches(CHESSMAN_SIZE), SRCINVERT);
+		ix, iy, CHESSMAN_SIZE, CHESSMAN_SIZE, SRCINVERT);
 }
 static void DrawInfoBoard()
 {
 	// Draw the rectangle
 	SetPenColor("LightWood");
-	drawRectangle(ScaleXInches(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH),
-		ScaleYInches(GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT),
-		ScaleXInches(INFO_BOARD_WIDTH), ScaleYInches(INFO_BOARD_HEIGHT), 1);
+	drawRectangle(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT,
+		INFO_BOARD_WIDTH, INFO_BOARD_HEIGHT, 1);
 
 	// Draw the text
 	SetPenColor("White");
-	drawBox(ScaleXInches(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5),
-		ScaleYInches(GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT / 5),
-		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches(INFO_BOARD_HEIGHT / 6),
+	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT / 5,
+		INFO_BOARD_WIDTH * 3 / 5, INFO_BOARD_HEIGHT / 6,
 		1, Info.turn, 'M', "Black");
-	drawBox(ScaleXInches(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5),
-		ScaleYInches(GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 2 / 5),
-		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches(INFO_BOARD_HEIGHT / 6),
+	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 2 / 5,
+		INFO_BOARD_WIDTH * 3 / 5, INFO_BOARD_HEIGHT / 6,
 		1, Info.side, 'M', "Black");
-	drawBox(ScaleXInches(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5),
-		ScaleYInches(GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3 / 5),
-		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches(INFO_BOARD_HEIGHT / 6),
+	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3 / 5,
+		INFO_BOARD_WIDTH * 3 / 5, INFO_BOARD_HEIGHT / 6,
 		1, Info.argument, 'M', "Black");
-	drawBox(ScaleXInches(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5),
-		ScaleYInches(GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3 / 5),
-		ScaleXInches(INFO_BOARD_WIDTH * 4 / 5), ScaleYInches(INFO_BOARD_HEIGHT / 6),
+	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3 / 5,
+		INFO_BOARD_WIDTH * 4 / 5, INFO_BOARD_HEIGHT / 6,
 		1, Info.now, 'M', "Black");
 
 }
@@ -249,28 +248,30 @@ static void DrawButtons()
 {
 	// Draw the rectangle
 	SetPenColor("DarkWood");
-	drawRectangle(ScaleXInches(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH),
-		0, ScaleXInches(INFO_BOARD_WIDTH), ScaleYInches(GAME_PAGE_HEIGHT - INFO_BOARD_WIDTH), 1);
+	drawRectangle(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH,
+		0, INFO_BOARD_WIDTH, GAME_PAGE_HEIGHT - INFO_BOARD_WIDTH, 1);
 
 	// Draw the buttons
 	button(GenUIID(GP_ID_UNDO),
-		ScaleXInches(CHESSBOARD_WIDTH), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3 / 5),
-		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6),
+		CHESSBOARD_WIDTH, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3 / 5,
+		INFO_BOARD_WIDTH * 3 / 5, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6,
 		"ª⁄∆Â");
 	button(GenUIID(GP_ID_SURRENDER),
-		ScaleXInches(CHESSBOARD_WIDTH), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2 / 5),
-		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6),
+		CHESSBOARD_WIDTH, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2 / 5,
+		INFO_BOARD_WIDTH * 3 / 5, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6,
 		"Õ∂Ωµ");
 
 }
 static void MouseEventProcess(int x, int y, int mbutton, int event)
 {
 	uiGetMouse(x, y, mbutton, event);
+
 	//*********************** to add menu button
+
 	//check buttons
 	if (button(GenUIID(GP_ID_UNDO),
-		ScaleXInches(CHESSBOARD_WIDTH), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3 / 5),
-		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6), "ª⁄∆Â"))
+		CHESSBOARD_WIDTH, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3 / 5,
+		INFO_BOARD_WIDTH * 3 / 5, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6, "ª⁄∆Â"))
 	{
 		//UNDO the last step only if it is the user's turn
 		if (UserTurn)
@@ -280,8 +281,8 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 		}
 	}
 	else if (button(GenUIID(GP_ID_SURRENDER),
-		ScaleXInches(CHESSBOARD_WIDTH), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2 / 5),
-		ScaleXInches(INFO_BOARD_WIDTH * 3 / 5), ScaleYInches((CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6), "Õ∂Ωµ"))
+		CHESSBOARD_WIDTH, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2 / 5,
+		INFO_BOARD_WIDTH * 3 / 5, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6, "Õ∂Ωµ"))
 	{
 		GameStatus = GAME_SURRENDER;
 	}
@@ -296,17 +297,17 @@ static void KeyboardEventProcess(int key, int event)
 {
 	uiGetKeyboard(key, event);
 
-	static int x = 10, y = 10; // the coordinates of the current location
+	static Position Cur = {10 ,10}; // the coordinates of the current position
 
-	if (B.BoardStatus[x][y] == 'N')
+	if (B.BoardStatus[Cur.x][Cur.y] == 'N')
 	{
 		// Draw the instruction
 		SetPenColor("Red");
-		MovePen(ScaleXInches(CHESSBOARD_LEFTBOTTOM + (x - 1) * CHESSBOARD_BOXSIZE),
-			ScaleYInches(CHESSBOARD_LEFTBOTTOM + (y - 1) * CHESSBOARD_BOXSIZE));
-		DrawArc(ScaleXInches(CHESSMAN_SIZE / 2), 0, 60);
-		DrawArc(ScaleXInches(CHESSMAN_SIZE / 2), 120, 180);
-		DrawArc(ScaleXInches(CHESSMAN_SIZE / 2), 240, 300);
+		MovePen(CHESSBOARD_LEFTBOTTOM + (Cur.x - 1) * CHESSBOARD_BOXSIZE,
+			CHESSBOARD_LEFTBOTTOM + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
+		DrawArc(CHESSMAN_SIZE / 2, 0, 60);
+		DrawArc(CHESSMAN_SIZE / 2, 120, 180);
+		DrawArc(CHESSMAN_SIZE / 2, 240, 300);
 	}
 	if (Setting.Operation == OP_KEYBOARD)
 	{
@@ -320,32 +321,33 @@ static void KeyboardEventProcess(int key, int event)
 			case VK_RBUTTON:
 				if (UserTurn)
 				{
-					if (B.BoardStatus[x][y] == 'N')
+					if (B.BoardStatus[Cur.x][Cur.y] == 'N')
 					{
-						SetPiece(&B, x, y, (Setting.UserColor == UC_BLACK) ? 'B' : 'W');
+						// User set piece
+						SetPiece(&B, Cur.x, Cur.y, (Setting.UserColor == UC_BLACK) ? 'B' : 'W');
 						InsertNode(LLHead, B);// Insert the current Board into the Linked List
 						LLTail = LLTail->Next;
 						UserTurn = FALSE;
 					}
 				}
 			case VK_LEFT:
-				if (x >= 1)
-					x--;
+				if (Cur.x >= 1)
+					Cur.x--;
 			case VK_RIGHT:
-				if (x <= BOARDSIZE)
-					x++;
+				if (Cur.x <= BOARDSIZE)
+					Cur.x++;
 			case VK_UP:
-				if (y <= BOARDSIZE)
-					y++;
+				if (Cur.y <= BOARDSIZE)
+					Cur.y++;
 			case VK_DOWN:
-				if (y >= 0)
-					y--;
+				if (Cur.y >= 0)
+					Cur.y--;
 			}
 			break;
 		}
 
 	}
-
+	
 }
 static void UpdateInfo()
 {
