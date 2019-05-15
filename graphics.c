@@ -2029,7 +2029,7 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 	 * osBits         -- Offscreen bitmap
 	*/
 
-	int px, py, pwidth, pheight;
+	int px, py, pwidth, pheight, pWindowHeight;
 	HDC mdc;
 	mdc = CreateCompatibleDC(osdc);
 	//Inches To Pixels
@@ -2037,6 +2037,7 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 	py = PixelsX(y);
 	pwidth = PixelsX(width);
 	pheight = PixelsX(height);
+	pWindowHeight = PixelsY(GetWindowHeight());
 
 	//Load the image
 	osBits = (HBITMAP)LoadImage(
@@ -2052,7 +2053,7 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 	SelectObject(mdc, osBits);
 	
 	//Update
-	BitBlt(osdc, px, py, pwidth, pheight, mdc, 0, 0, dwRop);
+	BitBlt(osdc, px, pWindowHeight - py - pheight, pwidth, pheight, mdc, 0, 0, dwRop);
 	DeleteDC(mdc);
 }
 
