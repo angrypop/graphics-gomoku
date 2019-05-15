@@ -189,8 +189,8 @@ static void DrawWhite(int i, int j)
 {
 	double ix, iy;
 	// ix, iy is the coordinates of the left-bottom of the chessman
-	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2;
-	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2;
+	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2.0;
+	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2.0;
 
 	// Show with transparent background
 	ShowBmp(".\\pictures\\WhiteChessman.bmp",
@@ -205,8 +205,8 @@ static void DrawBlack(int i, int j)
 {
 	double ix, iy;
 	// ix, iy is the coordinates of the left-bottom of the chessman
-	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2;
-	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2;
+	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2.0;
+	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2.0;
 
 	// Show with transparent background
 	ShowBmp(".\\pictures\\BlackChessman.bmp",
@@ -225,24 +225,22 @@ static void DrawInfoBoard()
 		INFO_BOARD_WIDTH, INFO_BOARD_HEIGHT, 1);
 
 	// Draw the text
-	SetPenColor("White");
-	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5,
-		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT / 5,
-		INFO_BOARD_WIDTH * 3 / 5, INFO_BOARD_HEIGHT / 6,
-		1, Info.turn, 'M', "Black");
-	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5,
-		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 2 / 5,
-		INFO_BOARD_WIDTH * 3 / 5, INFO_BOARD_HEIGHT / 6,
-		1, Info.side, 'M', "Black");
-	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5,
-		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3 / 5,
-		INFO_BOARD_WIDTH * 3 / 5, INFO_BOARD_HEIGHT / 6,
-		1, Info.argument, 'M', "Black");
-	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 5,
-		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3 / 5,
-		INFO_BOARD_WIDTH * 4 / 5, INFO_BOARD_HEIGHT / 6,
-		1, Info.now, 'M', "Black");
-
+	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT / 5.0,
+		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
+		0, Info.turn, 'M', "Black");
+	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 2.0 / 5.0,
+		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
+		0, Info.side, 'M', "Black");
+	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3.0 / 5.0,
+		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
+		0, Info.argument, 'M', "Black");
+	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 4.0 / 5.0,
+		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
+		0, Info.now, 'M', "Black");
 }
 static void DrawButtons()
 {
@@ -252,13 +250,15 @@ static void DrawButtons()
 		0, INFO_BOARD_WIDTH, GAME_PAGE_HEIGHT - INFO_BOARD_WIDTH, 1);
 
 	// Draw the buttons
+	usePredefinedButtonColors(2);
 	button(GenUIID(GP_ID_UNDO),
-		CHESSBOARD_WIDTH, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3 / 5,
-		INFO_BOARD_WIDTH * 3 / 5, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6,
+		CHESSBOARD_WIDTH + INFO_BOARD_WIDTH / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3.5 / 5.0,
+		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
 		"»ÚÆå");
+	usePredefinedButtonColors(2);
 	button(GenUIID(GP_ID_SURRENDER),
-		CHESSBOARD_WIDTH, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2 / 5,
-		INFO_BOARD_WIDTH * 3 / 5, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6,
+		CHESSBOARD_WIDTH + INFO_BOARD_WIDTH / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2.0 / 5.0,
+		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
 		"Í¶½µ");
 
 }
@@ -270,8 +270,9 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 
 	//check buttons
 	if (button(GenUIID(GP_ID_UNDO),
-		CHESSBOARD_WIDTH, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3 / 5,
-		INFO_BOARD_WIDTH * 3 / 5, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6, "»ÚÆå"))
+		CHESSBOARD_WIDTH + INFO_BOARD_WIDTH / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3.5 / 5.0,
+		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
+		"»ÚÆå"))
 	{
 		//UNDO the last step only if it is the user's turn
 		if (UserTurn)
@@ -281,8 +282,9 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 		}
 	}
 	else if (button(GenUIID(GP_ID_SURRENDER),
-		CHESSBOARD_WIDTH, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2 / 5,
-		INFO_BOARD_WIDTH * 3 / 5, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6, "Í¶½µ"))
+		CHESSBOARD_WIDTH + INFO_BOARD_WIDTH / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2.0 / 5.0,
+		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
+		"Í¶½µ"))
 	{
 		GameStatus = GAME_SURRENDER;
 	}
@@ -305,9 +307,9 @@ static void KeyboardEventProcess(int key, int event)
 		SetPenColor("Red");
 		MovePen(CHESSBOARD_LEFTBOTTOM + (Cur.x - 1) * CHESSBOARD_BOXSIZE,
 			CHESSBOARD_LEFTBOTTOM + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
-		DrawArc(CHESSMAN_SIZE / 2, 0, 60);
-		DrawArc(CHESSMAN_SIZE / 2, 120, 180);
-		DrawArc(CHESSMAN_SIZE / 2, 240, 300);
+		DrawArc(CHESSMAN_SIZE / 2.0, 0, 60);
+		DrawArc(CHESSMAN_SIZE / 2.0, 120, 180);
+		DrawArc(CHESSMAN_SIZE / 2.0, 240, 300);
 	}
 	if (Setting.Operation == OP_KEYBOARD)
 	{
