@@ -307,9 +307,7 @@ static void KeyboardEventProcess(int key, int event)
 		SetPenColor("Red");
 		MovePen(CHESSBOARD_LEFTBOTTOM + (Cur.x - 1) * CHESSBOARD_BOXSIZE,
 			CHESSBOARD_LEFTBOTTOM + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
-		DrawArc(CHESSMAN_SIZE / 2.0, 0, 60);
-		DrawArc(CHESSMAN_SIZE / 2.0, 120, 180);
-		DrawArc(CHESSMAN_SIZE / 2.0, 240, 300);
+		DrawArc(CHESSMAN_SIZE / 2.0, 0, 360);
 	}
 	if (Setting.Operation == OP_KEYBOARD)
 	{
@@ -334,7 +332,7 @@ static void KeyboardEventProcess(int key, int event)
 				}
 				break;
 			case VK_LEFT:
-				if (Cur.x >= 1)
+				if (Cur.x > 1)
 					Cur.x--;
 				break;
 			case VK_RIGHT:
@@ -346,7 +344,7 @@ static void KeyboardEventProcess(int key, int event)
 					Cur.y++;
 				break;
 			case VK_DOWN:
-				if (Cur.y >= 1)
+				if (Cur.y > 1)
 					Cur.y--;
 				break;
 			}

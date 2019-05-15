@@ -25,7 +25,7 @@
 #define INFO_BOARD_HEIGHT 2.0
 #define CHESSMAN_SIZE 0.2
 #define CHESSBOARD_LEFTBOTTOM 0.28
-#define CHESSBOARD_BOXSIZE 0.25
+#define CHESSBOARD_BOXSIZE 0.245
 //Macro for buttons id
 #define GP_ID_UNKNOWN 0
 #define GP_ID_UNDO 1
