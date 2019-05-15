@@ -2018,6 +2018,7 @@ double ScaleYInches(int y)/*y coordinate from pixels to inches*/
 //double x: the starting x inch of the painting 
 //double y: the starting y inch of the painting 
 //DWORD dwRop: Raster Operator 
+//Usage: to show a bitmap
 void ShowBmp(string address, double x, double y, double width, double height, DWORD dwRop)
 {
 	//the width and height here are in inches
@@ -2071,4 +2072,37 @@ void StartBatchDraw()
 void EndBatchDraw()
 {
 	DoUpdate();
+}
+
+//Funciton: ReadAllPixels
+//Arguments: 
+// FILE* fp: the pointer to the file to store the pixels
+//Usage: to read the pixels in the screen to the file
+bool ReadAllPixels(FILE* fp)
+{
+	if (fp == NULL)
+		return FALSE;
+	else
+	{
+		HDC dc = CreateCompatibleDC(gdc);
+		double ix, iy;// in inches
+		int px, py;// in pixels
+		int i, j;
+		ix = GetWindowWidth();
+		iy = GetWindowHeight();
+		px = PixelsX(ix);
+		py = PixelsY(iy);
+
+		StretchBlt(dc, 0, 0, px, py, gdc, 0, 0, px, py, SRCCOPY);
+		fprintf_s(fp, "%d %d\n\r",px, py);
+		for (i = 0; i < py; i++)
+		{
+			for (j = 0; j < px; j++)
+			{
+				fprintf(fp, "%d %d %d/ ", GetRValue(GetPixel(dc, i, j)), GetGValue(GetPixel(dc, i, j)), GetBValue(GetPixel(dc, i, j)));
+			}
+			fprintf_s(fp, "\n\r");
+		}
+
+	}
 }

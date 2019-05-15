@@ -22,4 +22,5 @@
 void StartBatchDraw();
 void EndBatchDraw();
 void ShowBmp(string address, double x, double y, double width, double height, DWORD dwRop);
+bool ReadAllPixels(FILE* fp);
 
