@@ -91,6 +91,7 @@ void DrawButtons()
 
 bool HomePage()
 {
+	SetWindowSize(16.7, 14.8);
 	InitGraphics();
 
 	winwidth = GetWindowWidth();
