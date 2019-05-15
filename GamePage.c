@@ -189,8 +189,8 @@ static void DrawWhite(int i, int j)
 {
 	double ix, iy;
 	// ix, iy is the coordinates of the left-bottom of the chessman
-	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2.0;
-	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2.0;
+	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
+	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
 
 	// Show with transparent background
 	ShowBmp(".\\pictures\\WhiteChessman.bmp",
@@ -205,8 +205,8 @@ static void DrawBlack(int i, int j)
 {
 	double ix, iy;
 	// ix, iy is the coordinates of the left-bottom of the chessman
-	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2.0;
-	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSMAN_SIZE - CHESSMAN_SIZE / 2.0;
+	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
+	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
 
 	// Show with transparent background
 	ShowBmp(".\\pictures\\BlackChessman.bmp",
@@ -320,7 +320,7 @@ static void KeyboardEventProcess(int key, int event)
 		case KEY_DOWN:
 			switch (key)
 			{
-			case VK_RBUTTON:
+			case VK_RETURN:
 				if (UserTurn)
 				{
 					if (B.BoardStatus[Cur.x][Cur.y] == 'N')
@@ -332,18 +332,23 @@ static void KeyboardEventProcess(int key, int event)
 						UserTurn = FALSE;
 					}
 				}
+				break;
 			case VK_LEFT:
 				if (Cur.x >= 1)
 					Cur.x--;
+				break;
 			case VK_RIGHT:
 				if (Cur.x <= BOARDSIZE)
 					Cur.x++;
+				break;
 			case VK_UP:
 				if (Cur.y <= BOARDSIZE)
 					Cur.y++;
+				break;
 			case VK_DOWN:
-				if (Cur.y >= 0)
+				if (Cur.y >= 1)
 					Cur.y--;
+				break;
 			}
 			break;
 		}
