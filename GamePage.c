@@ -44,6 +44,7 @@ static struct Information Info;
 static bool UserTurn;
 static int GameStatus;
 static LinkedListNode *LLTail;
+static Position Cur = { 8 ,8 }; // the coordinates of the current position
 
 // Local Functions
 static void InitGamePage();
@@ -189,8 +190,8 @@ static void DrawWhite(int i, int j)
 {
 	double ix, iy;
 	// ix, iy is the coordinates of the left-bottom of the chessman
-	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
-	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
+	ix = CHESSBOARD_LEFTBOTTOM_X + (i - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
+	iy = CHESSBOARD_LEFTBOTTOM_Y + (j - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
 
 	// Show with transparent background
 	ShowBmp(".\\pictures\\WhiteChessman.bmp",
@@ -205,8 +206,8 @@ static void DrawBlack(int i, int j)
 {
 	double ix, iy;
 	// ix, iy is the coordinates of the left-bottom of the chessman
-	ix = CHESSBOARD_LEFTBOTTOM + (i - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
-	iy = CHESSBOARD_LEFTBOTTOM + (j - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
+	ix = CHESSBOARD_LEFTBOTTOM_X + (i - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
+	iy = CHESSBOARD_LEFTBOTTOM_Y + (j - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
 
 	// Show with transparent background
 	ShowBmp(".\\pictures\\BlackChessman.bmp",
@@ -292,21 +293,66 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 	//operations
 	if (Setting.Operation == OP_MOUSE)
 	{
-		// ****************************** todo
+		// determine the coordinate of the position that the mouse is at
+		double ix, iy;
+		ix = ScaleXInches(x);
+		iy = ScaleYInches(y);
+
+		Cur.x = (ix - CHESSBOARD_LEFTBOTTOM_X) / CHESSBOARD_BOXSIZE + 1.5;
+		Cur.y = (iy - CHESSBOARD_LEFTBOTTOM_Y) / CHESSBOARD_BOXSIZE + 1.5;
+		if (Cur.x > 15)
+			Cur.x = 15;
+		else if (Cur.x < 0)
+			Cur.x = 0;
+		if (Cur.y > 15)
+			Cur.y = 15;
+		else if (Cur.y < 0)
+			Cur.y = 0;
+
+		// Draw the instruction
+		if (B.BoardStatus[Cur.x][Cur.y] == 'N')
+		{
+			// Draw the instruction
+			SetPenColor("Red");
+			MovePen(CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1 + 0.5) * CHESSBOARD_BOXSIZE,
+				CHESSBOARD_LEFTBOTTOM_Y + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
+			DrawArc(CHESSMAN_SIZE / 2.0, 0, 360);
+
+		}
+
+		switch (event)
+		{
+		case BUTTON_DOWN:
+			if (mbutton == LEFT_BUTTON)
+			{
+				if (UserTurn)
+				{
+					if (B.BoardStatus[Cur.x][Cur.y] == 'N')
+					{
+						// User set piece
+						SetPiece(&B, Cur.x, Cur.y, (Setting.UserColor == UC_BLACK) ? 'B' : 'W');
+						InsertNode(LLHead, B);// Insert the current Board into the Linked List
+						LLTail = LLTail->Next;
+						UserTurn = FALSE;
+					}
+				}
+			}
+			break;
+		default:
+			break;
+		}
 	}
 }
 static void KeyboardEventProcess(int key, int event)
 {
 	uiGetKeyboard(key, event);
 
-	static Position Cur = {10 ,10}; // the coordinates of the current position
-
 	if (B.BoardStatus[Cur.x][Cur.y] == 'N')
 	{
 		// Draw the instruction
 		SetPenColor("Red");
-		MovePen(CHESSBOARD_LEFTBOTTOM + (Cur.x - 1) * CHESSBOARD_BOXSIZE,
-			CHESSBOARD_LEFTBOTTOM + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
+		MovePen(CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1) * CHESSBOARD_BOXSIZE,
+			CHESSBOARD_LEFTBOTTOM_Y + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
 		DrawArc(CHESSMAN_SIZE / 2.0, 0, 360);
 	}
 	if (Setting.Operation == OP_KEYBOARD)
