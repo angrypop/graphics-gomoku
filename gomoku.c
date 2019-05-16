@@ -45,12 +45,17 @@ void InitBoard(Board *B) {
 		}
 	}
 	B->Turn = 0;
+	B->Xmin = B->Ymin = BOARDSIZE;
+	B->Xmax = B->Ymax = 1;
 }
 
 void SetPiece(Board *B, int TagX, int TagY, char Side) {
-	if (B->BoardStatus[TagX][TagY] != 'N') printf("Invalid Move.\n");
 	B->BoardStatus[TagX][TagY] = Side;
 	B->Turn++;
+	if (TagX < B->Xmin) B->Xmin = TagX;
+	if (TagX > B->Xmax) B->Xmax = TagX;
+	if (TagY < B->Ymin) B->Ymin = TagY;
+	if (TagY > B->Ymax) B->Ymax = TagY;
 }
 
 LinkedListNode * NewLinkedList() {
@@ -76,6 +81,21 @@ void DeleteNode(LinkedListNode * Head) {
 	LinkedListNode * Pre = Ptr->Pre;
 	free(Ptr);
 	Pre->Next = NULL;
+}
+
+void PrintBoard(Board B) {
+	int x, y;
+	for (x = 1; x <= BOARDSIZE; x++) {
+		printf("%2d |", BOARDSIZE - x + 1);
+		for (y = 1; y <= BOARDSIZE; y++) {
+			if (B.BoardStatus[BOARDSIZE - x + 1][y] == 'N') printf("+ ");
+			else printf("%c ", B.BoardStatus[BOARDSIZE - x + 1][y]);
+		}
+		printf("\n");
+	}
+	printf("   ");
+	for (x = 1; x <= BOARDSIZE; x++) printf("%2d", x);
+	printf("\n");
 }
 
 #endif

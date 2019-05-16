@@ -10,10 +10,13 @@
 #include "malloc.h"
 
 #define BOARDSIZE 15
+#define INF 210000000
 
 struct Board {
 	unsigned int Turn;
 	char BoardStatus[BOARDSIZE + 1][BOARDSIZE + 1];
+	unsigned long long HashValue;
+	int Xmin, Xmax, Ymin, Ymax;
 	/*
 		BoardStatue[x][y]: 'W' = White, 'B' = Black, 'N' = Neutral
 		x and y is counted from bottom-left, ranging from 1 to 15
@@ -23,6 +26,7 @@ typedef struct Board Board;
 
 struct Position {
 	int x, y;
+	int Score;
 };
 typedef struct Position Position;
 
@@ -79,4 +83,6 @@ void DeleteNode(LinkedListNode * Head);
 	Arguments	: void
 	Return		: void
 */
+
+void PrintBoard(Board B);
 #endif

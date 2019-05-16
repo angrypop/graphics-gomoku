@@ -9,6 +9,10 @@
 #include "gomoku.h"
 #include "simpleai.h"
 #include "stdio.h"
+#include "string.h"
+#include "stdlib.h"
+#include "time.h"
+#include "windows.h"
 
 void ReadWeights() {
 	freopen("weights.txt", "r", stdin);
@@ -18,12 +22,16 @@ void ReadWeights() {
 }
 
 double Evaluate(Board B, char Side) {
-	ReadWeights();
 	double Score = 0;
 	int x = 1, y = 1, dx = 0, dy = 0;
-	for (x = 1; x <= BOARDSIZE; x++) {
-		for (y = 1; y <= BOARDSIZE; y++) {
-			for (dx = -1; dx <= 1; dx++) {
+	int L = B.Xmin - 3, R = B.Xmax + 3, D = B.Ymin - 3, U = B.Ymax + 3;
+	if (L < 1) L = 1;
+	if (R > BOARDSIZE) R = BOARDSIZE;
+	if (D < 1) D = 1;
+	if (U > BOARDSIZE) U = BOARDSIZE;
+	for (x = L; x <= R; x++) {
+		for (y = D; y <= U; y++) {
+			for (dx = 0; dx <= 1; dx++) {
 				for (dy = -1; dy <= 1; dy++) {
 					if (dx == 0 && dy == 0) continue;
 					if (x + 4 * dx <= BOARDSIZE && x + 4 * dx >= 1 && y + 4 * dy <= BOARDSIZE && y + 4 * dy >= 1 &&
@@ -156,75 +164,104 @@ double Evaluate(Board B, char Side) {
 }
 
 Position GetBestMove(Board B, char Side) {
-	DTNode Root;
-	Root.IsMaxMin = 1;
-	Root.Side = Side;
-	Root.Value = -INF;
-	Root.Board = B;
-	Root.FatherValue = INF;
-	DFS(0, &Root);
-	return Root.BestMove;
+	return DFS(0, &B, INF, -INF, AISIDE, 1);
 }
 
-static double DFS(int Layor, DTNode *CurNode) {
-	
+static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Side, int IsMaxMin) {
+	char OppoSide = Side == 'B' ? 'W' : 'B';
+	Position Ret, SonRet;
+	if (IsMaxMin) Ret.Score = -INF;
+	else Ret.Score = INF;
+
 	if (Layor == SEARCHDEPTH) {
-		char OppoSide = CurNode->Side == 'B' ? 'W' : 'B';
-		return Evaluate(CurNode->Board, AISIDE) - Evaluate(CurNode->Board, HUMANSIDE);
+		return (Position) { 0, 0, ATTACK * Evaluate(*Board, AISIDE) - DEFENSE * Evaluate(*Board, HUMANSIDE) };
 		/* My evaluation - Opponent's evaluation */
 	}
-	int x = 1, y = 1;
+
+	int x = 1, y = 1, head = 0, QueueTail = 0;
+	Position ValidPositions[BOARDSIZE*BOARDSIZE + 1];
 	for (x = 1; x <= BOARDSIZE; x++) {
 		for (y = 1; y <= BOARDSIZE; y++) {
-			if (CurNode->Board.BoardStatus[x][y] != 'N') continue;/* Invalid Move */
-			
-			int dx, dy, t, IsPieceNearby = 0;
+			if (Board->BoardStatus[x][y] != 'N') continue;
+			int dx, dy, t;
 			for (dx = -1; dx <= 1; dx++) {
 				for (dy = -1; dy <= 1; dy++) {
 					for (t = 1; t <= DETECTDISTANCE; t++) {
+						
 						if (x + t * dx <= BOARDSIZE && x + t * dx >= 1 && y + t * dy <= BOARDSIZE && y + t * dy >= 1 &&
-							CurNode->Board.BoardStatus[x + t * dx][y + t * dy] != 'N') {
-							IsPieceNearby = 1;
+							Board->BoardStatus[x + t * dx][y + t * dy] != 'N') {
+							ValidPositions[QueueTail++] = (Position) { x, y };
 							break;
 						}
 					}
 				}
 			}
-			if (!IsPieceNearby) continue; /* Remote point, ignore */
+		}
+	}
+	
 
-			DTNode NewNode = *CurNode;
-			NewNode.Side = CurNode->Side == 'B' ? 'W' : 'B';
-			NewNode.Board.BoardStatus[x][y] = CurNode->Side;
-			NewNode.IsMaxMin = !CurNode->IsMaxMin;
-			if (NewNode.IsMaxMin) NewNode.Value = -INF;
-			else NewNode.Value = INF;
-			NewNode.FatherValue = CurNode->Value;/* AlphaBeta */
+	/* Heuristic Search */
+	for (head = 0; head < QueueTail; head++) {
+		x = ValidPositions[head].x; y = ValidPositions[head].y;
+		Board->BoardStatus[x][y] = Side;
+		SetPiece(Board, x, y, Side);
+		ValidPositions[head].Score = ATTACK*Evaluate(*Board, x, y, Side) - DEFENSE*Evaluate(*Board, x, y, OppoSide);
+		SetPiece(Board, x, y, 'N');
+		Board->Turn -= 2;
+	}
+	qsort(ValidPositions, QueueTail, sizeof(Position), CMP);
 
-			double NewValue = DFS(Layor + 1, &NewNode);
+	for (head = 0; head < QueueTail; head++){
+		x = ValidPositions[head].x; y = ValidPositions[head].y;
 
-			if (CurNode->IsMaxMin) {
-				if (NewValue > CurNode->Value) {
-					CurNode->Value = NewValue;
-					CurNode->BestMove.x = x;
-					CurNode->BestMove.y = y;
-				}
-				if (NewValue > CurNode->FatherValue) return NewValue; /* AlphaBeta */
+		SetPiece(Board, x, y, Side);
+		if (IsMaxMin) {
+			SonRet = DFS(Layor + 1, Board, Alpha, Ret.Score, OppoSide, !IsMaxMin);
+		}
+		else {
+			SonRet = DFS(Layor + 1, Board, Ret.Score, Beta, OppoSide, !IsMaxMin);
+		}
+		SetPiece(Board, x, y, 'N');
+		Board->Turn -= 2;
+
+		if (IsMaxMin) {
+			if (SonRet.Score > Ret.Score) {
+				Ret.Score = SonRet.Score;
+				Ret.x = x;
+				Ret.y = y;
 			}
-			else {
-				if (NewValue < CurNode->Value) {
-					CurNode->Value = NewValue;
-					CurNode->BestMove.x = x;
-					CurNode->BestMove.y = y;
-				}
-				if (NewValue < CurNode->FatherValue) return NewValue; /* AlphaBeta */
+			if (SonRet.Score > Alpha) return Ret;/* Alpha-Beta Pruning */
+		}
+		else {
+			if (SonRet.Score < Ret.Score) {
+				Ret.Score = SonRet.Score;
+				Ret.x = x;
+				Ret.y = y;
+			}
+			if (SonRet.Score < Beta) return Ret;/* Alpha-Beta Pruning */
+		}
+	}
+	if (IsMaxMin) return Ret;
+	else return Ret;
+}
+
+static int	CMP(const void *A, const void *B) {
+	if (((Position*)A)->Score > ((Position*)B)->Score) return -1;
+	if (((Position*)A)->Score == ((Position*)B)->Score) return 0;
+	if (((Position*)A)->Score < ((Position*)B)->Score) return 1;
+}
+
+void InitAI() {
+	ReadWeights();
+	srand((unsigned)time(NULL));
+	int x, y, t;
+	for (x = 0; x <= BOARDSIZE; x++) {
+		for (y = 0; y <= BOARDSIZE; y++) {
+			while(ZobristHash[x][y]<=1000000000000000){
+				ZobristHash[x][y] = ZobristHash[x][y] * RAND_MAX + rand();
 			}
 		}
 	}
-	/*if (Layor <= 2) {
-		PrintBoard(CurNode->Board);
-		printf("Layor[%d] bestmove:( %d , %d) for side [%c], and AI get eva sco: %.2lf\n\n",Layor, CurNode->BestMove.x, CurNode->BestMove.y,CurNode->Side, CurNode->Value);
-
-	}*/
-		return CurNode->Value;
 }
+
 #endif

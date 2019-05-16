@@ -8,23 +8,16 @@
 #include "stdio.h"
 
 #define DIMENSION 13
-#define SEARCHDEPTH 4
+#define SEARCHDEPTH 4 /* Must be even! */
 #define DETECTDISTANCE 1
 #define HUMANSIDE 'W'
 #define AISIDE 'B'
-
-struct DecisionTreeNode {
-	Board Board;
-	Position BestMove;
-	double Value;
-	double FatherValue;/* AlphaBeta */
-	char Side;
-	int IsMaxMin;/* 1: Max 0: Min*/
-};
-typedef struct DecisionTreeNode DTNode;
+#define ATTACK 1.0
+#define DEFENSE 1.5
 
 double ShapeCount[DIMENSION + 1];
 double ShapeWeight[DIMENSION + 1];
+unsigned long long ZobristHash[BOARDSIZE + 1][BOARDSIZE + 1];
 /* 
 	(Below denote A for friendly pieces, ? for blank positions)
 	TERM	SHAPE		NO.
@@ -70,6 +63,8 @@ Position GetBestMove(Board B, char Side);
 		SetPiece(&B, BestMove.x, BestMove.y, 'W');
 */
 
-static double DFS(int Layor, DTNode *CurNode);
+void InitAI();
 
+static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Side, int IsMaxMin);
+static int	CMP(const void *A, const void *B);
 #endif
