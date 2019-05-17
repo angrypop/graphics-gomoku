@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _GAME_PAGE_H_
+#define _GAME_PAGE_H_
+
 #include "graphics.h"
 #include "extgraph.h"
 #include "genlib.h"
@@ -34,7 +36,7 @@
 #define GP_ID_QUIT 8
 
 // declarations
-int GamePage(void);
+void newGamePage(void);
 
 //structure
 struct Information
@@ -44,3 +46,5 @@ struct Information
 	string argument;
 	string now;
 };
+
+#endif 

@@ -14,12 +14,13 @@
 #include <ole2.h>
 #include <ocidl.h>
 #include <winuser.h>
-#include "GamePage.h"
+#include "newGamePage.h"
 #include "extrafunc.h"
 #include "gomoku.h"
-#include "Main.h"
+#include "newMain.h"
 #include "imgui.h"
 #include <time.h>
+
 
 // extern Global variables
 extern Board B;
@@ -56,66 +57,21 @@ static void DrawInfoBoard();
 static void DrawButtons();
 static void MouseEventProcess(int x, int y, int mbutton, int event);
 static void KeyboardEventProcess(int key, int event);
+static void TimerEventProcess(int timerID);
 static void UpdateInfo();
+static void CheckResult();
 static void AbsDelay(int interval);
 
-
-// to do
-// 棋盘
-// 主要功能实现：落子（透明贴图）
-
-// 信息区
-// 主要功能实现：回合数，局面参数，黑白持方，当前回合走棋人
-
-// 按钮区
-// 悔棋， （复盘?）， 投降
-
-// 菜单区
-// 按下菜单键后显示更多按键，并将菜单二字改为收起菜单
-// 设置，帮助，返回，保存截图， 保存游戏, QUIT
-
-//to do :
-//3. Mouse operation
-//4. the menu
-
-int GamePage(void)
+void newGamePage()
 {
 	InitGamePage();
-	
-	while (TRUE)
-	{
-		GameStatus = GAME_UNKNOWN;
+	// register the callback function of Game Page
+	registerTimerEvent(TimerEventProcess);
+	registerKeyboardEvent(KeyboardEventProcess);
+	registerMouseEvent(MouseEventProcess);
 
-		UpdateInfo();
-		Draw();
-
-		if (!UserTurn)
-		{
-			Position BestMove = GetBestMove(B, (Setting.UserColor == UC_BLACK) ? 'W' : 'B');
-			SetPiece(&B, BestMove.x, BestMove.y, (Setting.UserColor == UC_BLACK) ? 'W' : 'B');
-			UserTurn = TRUE;
-		}
-		
-		//absolute delay
-		AbsDelay(16);
-
-		//check result
-		char Result = CheckWin(B);
-		if (Result == 'W')
-		{
-			GameStatus = GAME_WIN;
-		}
-		else if (Result == 'L')
-		{
-			GameStatus = GAME_LOSE;
-		}
-
-
-		if (GameStatus != GAME_UNKNOWN)
-			break;
-	}
-	return GameStatus;
 }
+
 
 static void InitGamePage()
 {
@@ -127,9 +83,6 @@ static void InitGamePage()
 	iy = 30;
 	SetWindowSize(ix, iy);
 	InitGraphics();
-
-	registerKeyboardEvent(KeyboardEventProcess);
-	registerMouseEvent(MouseEventProcess);
 
 	// initialize the information 
 	if (Setting.UserColor == UC_BLACK)
@@ -151,11 +104,26 @@ static void InitGamePage()
 
 	// initialize the gui
 	InitGUI();
+
+	// initicalize the newly defined color
 	DefineColor("LightWood", 0.98, 0.788, 0.486);
 	DefineColor("DarkWood", 0.933, 0.6588, 0.388);
 
 	// initialize the linked list tail
 	LLTail = LLHead;
+}
+static void TimerEventProcess(int timerID)
+{
+	switch (timerID)
+	{
+	case DRAW_ID:
+		UpdateInfo();
+		Draw();
+		CheckResult();
+		break;
+	default:
+		break;
+	}
 }
 
 static void Draw()
@@ -184,6 +152,15 @@ static void DrawChessboard()
 			else if ('B' == B.BoardStatus[i][j])
 				DrawBlack(i, j);
 		}
+	}
+
+	if (B.BoardStatus[Cur.x][Cur.y] == 'N')
+	{
+		// Draw the instruction
+		SetPenColor("Red");
+		MovePen(CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1) * CHESSBOARD_BOXSIZE,
+			CHESSBOARD_LEFTBOTTOM_Y + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
+		DrawArc(CHESSMAN_SIZE / 2.0, 0, 360);
 	}
 }
 static void DrawWhite(int i, int j)
@@ -287,7 +264,12 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
 		"投降"))
 	{
-		GameStatus = GAME_SURRENDER;
+		// cancel the callback function in Game Page
+		cancelTimerEvent();
+		cancelKeyboardEvent();
+		cancelMouseEvent();
+		// Go to End Game Page with the infomation of surrender
+		EndGamePage(GAME_SURRENDER);
 	}
 
 	//operations
@@ -308,17 +290,6 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 			Cur.y = 15;
 		else if (Cur.y < 0)
 			Cur.y = 0;
-
-		// Draw the instruction
-		if (B.BoardStatus[Cur.x][Cur.y] == 'N')
-		{
-			// Draw the instruction
-			SetPenColor("Red");
-			MovePen(CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1 + 0.5) * CHESSBOARD_BOXSIZE,
-				CHESSBOARD_LEFTBOTTOM_Y + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
-			DrawArc(CHESSMAN_SIZE / 2.0, 0, 360);
-
-		}
 
 		switch (event)
 		{
@@ -347,14 +318,7 @@ static void KeyboardEventProcess(int key, int event)
 {
 	uiGetKeyboard(key, event);
 
-	if (B.BoardStatus[Cur.x][Cur.y] == 'N')
-	{
-		// Draw the instruction
-		SetPenColor("Red");
-		MovePen(CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1) * CHESSBOARD_BOXSIZE,
-			CHESSBOARD_LEFTBOTTOM_Y + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
-		DrawArc(CHESSMAN_SIZE / 2.0, 0, 360);
-	}
+
 	if (Setting.Operation == OP_KEYBOARD)
 	{
 		switch (event)
@@ -398,7 +362,7 @@ static void KeyboardEventProcess(int key, int event)
 		}
 
 	}
-	
+
 }
 static void UpdateInfo()
 {
@@ -437,6 +401,57 @@ static void UpdateInfo()
 		}
 	}
 }
+static void CheckResult()
+{
+	char result = CheckWin(B);
+	switch (result)
+	{
+	case 'W':
+		switch (Setting.UserColor)
+		{
+		case UC_WHITE:
+			// cancel the callback function in Game Page
+			cancelTimerEvent();
+			cancelKeyboardEvent();
+			cancelMouseEvent();
+			// Go to End Game Page with the infomation of winning
+			EndGamePage(GAME_WIN);
+			break;
+		case UC_BLACK:
+			// cancel the callback function in Game Page
+			cancelTimerEvent();
+			cancelKeyboardEvent();
+			cancelMouseEvent();
+			// Go to End Game Page with the infomation of lost
+			EndGamePage(GAME_LOSE);
+			break;
+		}
+		break;
+	case 'B':
+		switch (Setting.UserColor)
+		{
+		case UC_BLACK:
+			// cancel the callback function in Game Page
+			cancelTimerEvent();
+			cancelKeyboardEvent();
+			cancelMouseEvent();
+			// Go to End Game Page with the infomation of winning
+			EndGamePage(GAME_WIN);
+			break;
+		case UC_WHITE:
+			// cancel the callback function in Game Page
+			cancelTimerEvent();
+			cancelKeyboardEvent();
+			cancelMouseEvent();
+			// Go to End Game Page with the infomation of lost
+			EndGamePage(GAME_LOSE);
+			break;
+			break;
+		default:
+			break;
+		}
+	}
+}
 static void AbsDelay(int interval)
 {
 	static int flag = 0;
@@ -454,5 +469,4 @@ static void AbsDelay(int interval)
 		Sleep(1);
 	}
 	PreTime = CurTime;
-
 }

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _MAIN_H_
+#define _MAIN_H_
+
 
 #include "graphics.h"
 #include "extgraph.h"
@@ -23,3 +25,15 @@
 #define GAME_WIN 1
 #define GAME_LOSE 2
 #define GAME_SURRENDER 3
+
+// Macro for timer
+#define DRAW_INTERVAL 16
+#define DRAW_ID 1
+
+// declaration for timer
+void startTimer(int id, int timeinterval);
+
+#endif
+
+
+

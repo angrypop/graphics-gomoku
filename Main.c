@@ -14,41 +14,12 @@
 #include <ole2.h>
 #include <ocidl.h>
 #include <winuser.h>
-#include "Main.h"
+#include "newMain.h"
 
 void Main()
 {
-	// The loop is to deal with 'playing again '
-	while (TRUE)
-	{
-		int GameStatus = GAME_UNKNOWN;
-		bool PlayAgain = FALSE;
-
-		//  HomePage function loads the home page
-		// if the user presses 'New Game' or 'Load Game'
-		// this function initializes a new game or loads existing game data
-		// and initializes the default setting of the game
-		// if the user presses the 'Setting', a new page should be painted to facilitates the changes
-		// and the function returns QUIT iff the user presses 'Quit Game'
-		// otherwise returns UNKNOWN
-		GameStatus = HomePage();
-
-		// GamePage function loads the game page
-		// and return the final game status of the game
-		if (GameStatus != GAME_QUIT)
-			GameStatus = GamePage();
-
-		// The EndGamePage function shows End Game Pagevaries based on different game statuses
-		// and returns TRUE if the user chooses to play again 
-		// returns FALSE otherwise
-		if (GameStatus == GAME_QUIT)
-			QuitGamePage();
-		else
-			PlayAgain = EndGamePage(GameStatus);
-
-		if (PlayAgain == FALSE)
-			break;
-
-	}
-	
+	// start the timer for drawing
+	startTimer(DRAW_ID, DRAW_INTERVAL);
+	// Go to the Home Page
+	HomePage();
 }
