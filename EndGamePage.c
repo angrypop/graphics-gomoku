@@ -1,3 +1,6 @@
+/*
+    provide a endgamepage,just a end page
+*/ 
 #include "graphics.h"
 #include "extgraph.h"
 #include "genlib.h"
@@ -18,54 +21,48 @@
 #include "imgui.h"
 
 
-/***************************************************************
- VisualStudio 2010 ÓÃ»§×¢Òâ£º
-    ½«Character SetÉèÖÃÎª Use Multibyte Character Set
-	·ñÔòÖĞÎÄÏÔÊ¾²»Õı³£
-***************************************************************/
-
-// È«¾Ö±äÁ¿
+// global variable
 static int GameStatus;
-static double winwidth, winheight;   // ´°¿Ú³ß´ç
-static int    show_more_buttons = 0; // ÏÔÊ¾¸ü¶à°´Å¥
+static double winwidth, winheight;   // window size
+static int    show_more_buttons = 0; // show more button
 
-// ÇåÆÁº¯Êı£¬provided in libgraphics
+// clear sceen functionï¼Œprovided in libgraphics
 void DisplayClear(void); 
-// ¼ÆÊ±Æ÷Æô¶¯º¯Êı£¬provided in libgraphics
+// timer functionï¼Œprovided in libgraphics
 void startTimer(int id,int timeinterval);
 
-// ÓÃ»§µÄÏÔÊ¾º¯Êı
+// display function
 void display(void); 
 
-// ÓÃ»§µÄÊó±êÊÂ¼şÏìÓ¦º¯Êı
+// mouse event function
 void MouseEventProcess(int x, int y, int button, int event)
 {
-	uiGetMouse(x,y,button,event); //GUI»ñÈ¡Êó±ê
-	display(); // Ë¢ĞÂÏÔÊ¾
+	uiGetMouse(x,y,button,event); //GUI get mouse
+	display(); // refresh diaplay
 }
 
 
-// ÓÃ»§Ö÷³ÌĞòÈë¿Ú
-// ½ö³õÊ¼»¯Ö´ĞĞÒ»´Î
+// User main program entry
+// Initialize once
 bool EndGamePage (int gameStatus) 
 {
-	// ³õÊ¼»¯´°¿ÚºÍÍ¼ĞÎÏµÍ³
-	//SetWindowSize(10, 10); // µ¥Î» - Ó¢´ç
+	// åˆå§‹åŒ–çª—å£å’Œå›¾å½¢ç³»ç»Ÿ
+	//SetWindowSize(10, 10); // å•ä½ - è‹±å¯¸
 	//SetWindowSize(20, 10);
-	//SetWindowSize(10, 20);  // Èç¹ûÆÁÄ»³ß´ç²»¹»£¬Ôò°´±ÈÀıËõĞ¡
+	//SetWindowSize(10, 20);  // å¦‚æœå±å¹•å°ºå¯¸ä¸å¤Ÿï¼Œåˆ™æŒ‰æ¯”ä¾‹ç¼©å°
     InitGraphics();
 
     
-	// »ñµÃ´°¿Ú³ß´ç
+	// get window size
     winwidth = GetWindowWidth();
     winheight = GetWindowHeight();
     
     GameStatus=gameStatus;
 
-	// ×¢²áÊ±¼äÏìÓ¦º¯Êı
-	registerMouseEvent(MouseEventProcess);      // Êó±ê
+	// register mouse event function
+	registerMouseEvent(MouseEventProcess);      // mouse
 
-	// ´ò¿ª¿ØÖÆÌ¨£¬·½±ãÊä³ö±äÁ¿ĞÅÏ¢£¬±ãÓÚµ÷ÊÔ
+	// open the console for easy output of variable information and debug
 	// InitConsole(); 
 
 }
@@ -73,14 +70,14 @@ bool EndGamePage (int gameStatus)
 
 
 
-// °´Å¥ÑİÊ¾³ÌĞò
+//Buttons demonstration program
 void drawButtons()
 {
 	double fH = GetFontHeight();
-	double h = fH*2;  // ¿Ø¼ş¸ß¶È
+	double h = fH*2;  // conrtol height
 	double x = winwidth/2.5;  
 	double y = winheight/2-h; 
-	double w = winwidth/5; // ¿Ø¼ş¿í¶È
+	double w = winwidth/5; // conrtol width
 
 	MovePen(winwidth/3,winheight/3*2);
 	switch (GameStatus){
@@ -95,13 +92,13 @@ void drawButtons()
 	     break;
 	 }
     
-	if (button(GenUIID(0), x, y, w, h,  "¸´ÅÌ")){
+	if (button(GenUIID(0), x, y, w, h,  "å¤ç›˜")){
 		show_more_buttons = ! show_more_buttons;
 		PlayAgain=TRUE;
 	}
 		
 	
-	if( button(GenUIID(0), x, y-2*h, w, h, "ÍË³ö")){
+	if( button(GenUIID(0), x, y-2*h, w, h, "é€€å‡º")){
 		exit(-1);
 		PlayAgain=FALSE;
 	}
@@ -110,9 +107,9 @@ void drawButtons()
 
 void display()
 {
-	// ÇåÆÁ
+	// clearscreen
 	DisplayClear();
 			
-	// °´Å¥
+	// button
 	drawButtons();
 }
