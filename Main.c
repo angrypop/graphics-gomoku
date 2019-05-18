@@ -15,6 +15,12 @@
 #include <ocidl.h>
 #include <winuser.h>
 #include "Main.h"
+#include "gomoku.h"
+
+// Global variables
+LinkedListNode *LLHead;// the head of the linked list
+Board B; // the original chessboard
+struct setting Setting = { OP_MOUSE, FM_BLACK, UC_BLACK }; // the setting of the game and initialize the default 
 
 void Main()
 {

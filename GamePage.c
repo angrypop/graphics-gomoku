@@ -25,20 +25,7 @@
 // extern Global variables
 extern Board B;
 extern LinkedListNode *LLHead;
-// extern Setting S;
-// temp: use local
-static struct setting
-{
-	int Operation;
-	int FirstMove;
-	int UserColor;
-}Setting;
-#define OP_KEYBOARD 1
-#define OP_MOUSE 0
-#define FM_WHITE 1
-#define FM_BLACK 0
-#define UC_WHITE 1
-#define UC_BLACK 0
+extern struct setting Setting;
 
 // Local variables
 static struct Information Info;

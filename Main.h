@@ -30,8 +30,24 @@
 #define DRAW_INTERVAL 16
 #define DRAW_ID 1
 
+// Macro for Setting
+#define OP_KEYBOARD 1
+#define OP_MOUSE 0
+#define FM_WHITE 1
+#define FM_BLACK 0
+#define UC_WHITE 1
+#define UC_BLACK 0
+
 // declaration for timer
 void startTimer(int id, int timeinterval);
+
+// structure
+struct setting
+{
+	int Operation;
+	int FirstMove;
+	int UserColor;
+};
 
 #endif
 
