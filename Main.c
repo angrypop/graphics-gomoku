@@ -14,7 +14,7 @@
 #include <ole2.h>
 #include <ocidl.h>
 #include <winuser.h>
-#include "newMain.h"
+#include "Main.h"
 
 void Main()
 {
