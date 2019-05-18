@@ -276,15 +276,19 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 					DeleteNode(LLHead);
 				}
 			}
-			Undo = FALSE;
+			
 		}
+		Undo = FALSE;
 	}
 	else if (Surrender)
 	{
+		Surrender = FALSE;
 		// cancel the callback function in Game Page
 		cancelTimerEvent();
 		cancelKeyboardEvent();
 		cancelMouseEvent();
+		// close the current canvas
+		closegraph();
 		// Go to End Game Page with the infomation of surrender
 		EndGamePage(GAME_SURRENDER);
 	}
@@ -475,6 +479,8 @@ static void CheckResult()
 			cancelTimerEvent();
 			cancelKeyboardEvent();
 			cancelMouseEvent();
+			// close the current canvas
+			closegraph();
 			// Go to End Game Page with the infomation of winning
 			EndGamePage(GAME_WIN);
 			break;
@@ -483,6 +489,8 @@ static void CheckResult()
 			cancelTimerEvent();
 			cancelKeyboardEvent();
 			cancelMouseEvent();
+			// close the current canvas
+			closegraph();
 			// Go to End Game Page with the infomation of lost
 			EndGamePage(GAME_LOSE);
 			break;
@@ -496,6 +504,8 @@ static void CheckResult()
 			cancelTimerEvent();
 			cancelKeyboardEvent();
 			cancelMouseEvent();
+			// close the current canvas
+			closegraph();
 			// Go to End Game Page with the infomation of winning
 			EndGamePage(GAME_WIN);
 			break;
@@ -504,6 +514,8 @@ static void CheckResult()
 			cancelTimerEvent();
 			cancelKeyboardEvent();
 			cancelMouseEvent();
+			// close the current canvas
+			closegraph();
 			// Go to End Game Page with the infomation of lost
 			EndGamePage(GAME_LOSE);
 			break;
