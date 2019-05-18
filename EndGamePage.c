@@ -19,6 +19,7 @@
 #include <winuser.h>
 
 #include "imgui.h"
+#include "EndGamePage.h"
 
 
 // global variable
