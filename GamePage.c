@@ -14,10 +14,10 @@
 #include <ole2.h>
 #include <ocidl.h>
 #include <winuser.h>
-#include "newGamePage.h"
+#include "GamePage.h"
 #include "extrafunc.h"
 #include "gomoku.h"
-#include "newMain.h"
+#include "Main.h"
 #include "imgui.h"
 #include <time.h>
 
@@ -46,6 +46,8 @@ static bool UserTurn;
 static int GameStatus;
 static LinkedListNode *LLTail;
 static Position Cur = { 8 ,8 }; // the coordinates of the current position
+static bool Undo = FALSE; // store the status of the button UNDO
+static bool Surrender = FALSE; // store the status of the button SURRENDER
 
 // Local Functions
 static void InitGamePage();
@@ -61,8 +63,9 @@ static void TimerEventProcess(int timerID);
 static void UpdateInfo();
 static void CheckResult();
 static void AbsDelay(int interval);
+static void CheckAI();
 
-void newGamePage()
+void GamePage()
 {
 	InitGamePage();
 	// register the callback function of Game Page
@@ -78,9 +81,11 @@ static void InitGamePage()
 	// Initialize a new Windows
 	// if the last function doesn't close the window
 	// close previous window here
+	InitAI();
+
 	double ix, iy;
-	ix = 30;
-	iy = 30;
+	ix = GAME_PAGE_WIDTH;
+	iy = GAME_PAGE_HEIGHT;
 	SetWindowSize(ix, iy);
 	InitGraphics();
 
@@ -124,6 +129,8 @@ static void TimerEventProcess(int timerID)
 	default:
 		break;
 	}
+	// if it is AI's turn, then AI will take its turn
+	CheckAI();
 }
 
 static void Draw()
@@ -139,7 +146,7 @@ static void Draw()
 
 static void DrawChessboard()
 {
-	ShowBmp(".\\pictures\\Checkboard.bmp",
+	ShowBmp(".\\pictures\\Chessboard15.bmp",
 		0, 0, CHESSBOARD_WIDTH, CHESSBOARD_HEIGHT, SRCCOPY);
 
 	int i, j;
@@ -147,18 +154,18 @@ static void DrawChessboard()
 	{
 		for (j = 1; j <= BOARDSIZE; j++)
 		{
-			if ('W' == B.BoardStatus[i][j])
+			if ('W' == LLTail->Board.BoardStatus[i][j])
 				DrawWhite(i, j);
-			else if ('B' == B.BoardStatus[i][j])
+			else if ('B' == LLTail->Board.BoardStatus[i][j])
 				DrawBlack(i, j);
 		}
 	}
 
+	// Draw the instruction
 	if (B.BoardStatus[Cur.x][Cur.y] == 'N')
 	{
-		// Draw the instruction
 		SetPenColor("Red");
-		MovePen(CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1) * CHESSBOARD_BOXSIZE,
+		MovePen(CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1 + 0.4) * CHESSBOARD_BOXSIZE,
 			CHESSBOARD_LEFTBOTTOM_Y + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
 		DrawArc(CHESSMAN_SIZE / 2.0, 0, 360);
 	}
@@ -229,40 +236,50 @@ static void DrawButtons()
 
 	// Draw the buttons
 	usePredefinedButtonColors(2);
-	button(GenUIID(GP_ID_UNDO),
+	if (button(GenUIID(GP_ID_UNDO),
 		CHESSBOARD_WIDTH + INFO_BOARD_WIDTH / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3.5 / 5.0,
 		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
-		"»ÚÆå");
+		"»ÚÆå"))
+		Undo = TRUE;
 	usePredefinedButtonColors(2);
-	button(GenUIID(GP_ID_SURRENDER),
+	if (button(GenUIID(GP_ID_SURRENDER),
 		CHESSBOARD_WIDTH + INFO_BOARD_WIDTH / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2.0 / 5.0,
 		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
-		"Í¶½µ");
+		"Í¶½µ"))
+		Surrender = TRUE;
 
 }
 static void MouseEventProcess(int x, int y, int mbutton, int event)
 {
 	uiGetMouse(x, y, mbutton, event);
 
+	//Check whether the mouse is outside the chessboard
+	static bool OutsideBoard = TRUE;
+	if (ScaleXInches(x) >= CHESSBOARD_WIDTH)
+		OutsideBoard = TRUE;
+	else
+		OutsideBoard = FALSE;
+
 	//*********************** to add menu button
 
-	//check buttons
-	if (button(GenUIID(GP_ID_UNDO),
-		CHESSBOARD_WIDTH + INFO_BOARD_WIDTH / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3.5 / 5.0,
-		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
-		"»ÚÆå"))
+	if (Undo)
 	{
 		//UNDO the last step only if it is the user's turn
 		if (UserTurn)
 		{
-			LLTail = LLTail->Pre;
-			DeleteNode(LLHead);
+			if (LLTail->Pre != NULL)
+			{
+				if (LLTail->Pre->Pre != NULL)
+				{
+					LLTail = LLTail->Pre->Pre;
+					DeleteNode(LLHead);
+					DeleteNode(LLHead);
+				}
+			}
+			Undo = FALSE;
 		}
 	}
-	else if (button(GenUIID(GP_ID_SURRENDER),
-		CHESSBOARD_WIDTH + INFO_BOARD_WIDTH / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2.0 / 5.0,
-		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
-		"Í¶½µ"))
+	else if (Surrender)
 	{
 		// cancel the callback function in Game Page
 		cancelTimerEvent();
@@ -296,15 +313,36 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 		case BUTTON_DOWN:
 			if (mbutton == LEFT_BUTTON)
 			{
-				if (UserTurn)
+				if (UserTurn && !OutsideBoard)
 				{
-					if (B.BoardStatus[Cur.x][Cur.y] == 'N')
+					if (LLTail->Board.BoardStatus[Cur.x][Cur.y] == 'N')
 					{
 						// User set piece
-						SetPiece(&B, Cur.x, Cur.y, (Setting.UserColor == UC_BLACK) ? 'B' : 'W');
-						InsertNode(LLHead, B);// Insert the current Board into the Linked List
+						Board *pB = NULL;
+						pB = (Board *)malloc(sizeof(Board));
+						InitBoard(pB);
+						// copy the old board to the new one
+						int i, j;
+						for (i = 1; i <= BOARDSIZE; i++)
+						{
+							for (j = 1; j <= BOARDSIZE; j++)
+							{
+								if ('W' == LLTail->Board.BoardStatus[i][j])
+									pB->BoardStatus[i][j] = 'W';
+								else if ('B' == LLTail->Board.BoardStatus[i][j])
+									pB->BoardStatus[i][j] = 'B';
+							}
+						}
+						pB->Turn = LLTail->Board.Turn;
+
+						InsertNode(LLHead, *pB);
 						LLTail = LLTail->Next;
+						SetPiece(&LLTail->Board, Cur.x, Cur.y, (Setting.UserColor == UC_BLACK) ? 'B' : 'W');
 						UserTurn = FALSE;
+
+						// Update the screen in time
+						UpdateInfo();
+						Draw();
 					}
 				}
 			}
@@ -331,13 +369,34 @@ static void KeyboardEventProcess(int key, int event)
 			case VK_RETURN:
 				if (UserTurn)
 				{
-					if (B.BoardStatus[Cur.x][Cur.y] == 'N')
+					if (LLTail->Board.BoardStatus[Cur.x][Cur.y] == 'N')
 					{
 						// User set piece
-						SetPiece(&B, Cur.x, Cur.y, (Setting.UserColor == UC_BLACK) ? 'B' : 'W');
-						InsertNode(LLHead, B);// Insert the current Board into the Linked List
+						Board *pB;
+						pB = (Board *)malloc(sizeof(Board));
+						InitBoard(pB);
+						// copy the old board to the new one
+						int i, j;
+						for (i = 1; i <= BOARDSIZE; i++)
+						{
+							for (j = 1; j <= BOARDSIZE; j++)
+							{
+								if ('W' == LLTail->Board.BoardStatus[i][j])
+									pB->BoardStatus[i][j] = 'W';
+								else if ('B' == LLTail->Board.BoardStatus[i][j])
+									pB->BoardStatus[i][j] = 'B';
+							}
+						}
+						pB->Turn = LLTail->Board.Turn;
+
+						InsertNode(LLHead, *pB);
 						LLTail = LLTail->Next;
+						SetPiece(&LLTail->Board, Cur.x, Cur.y, (Setting.UserColor == UC_BLACK) ? 'B' : 'W');
 						UserTurn = FALSE;
+
+						// Update the screen in time
+						UpdateInfo();
+						Draw();
 					}
 				}
 				break;
@@ -400,6 +459,8 @@ static void UpdateInfo()
 			break;
 		}
 	}
+
+	
 }
 static void CheckResult()
 {
@@ -469,4 +530,33 @@ static void AbsDelay(int interval)
 		Sleep(1);
 	}
 	PreTime = CurTime;
+}
+static void CheckAI()
+{
+	// AI set piece
+	if (!UserTurn)
+	{
+		Position BestMove = GetBestMove(LLTail->Board, (Setting.UserColor == UC_BLACK) ? 'W' : 'B');
+		Board *pB;
+		pB = (Board *)malloc(sizeof(Board));
+		InitBoard(pB);
+		// copy the old board to the new one
+		int i, j;
+		for (i = 1; i <= BOARDSIZE; i++)
+		{
+			for (j = 1; j <= BOARDSIZE; j++)
+			{
+				if ('W' == LLTail->Board.BoardStatus[i][j])
+					pB->BoardStatus[i][j] = 'W';
+				else if ('B' == LLTail->Board.BoardStatus[i][j])
+					pB->BoardStatus[i][j] = 'B';
+			}
+		}
+		pB->Turn = LLTail->Board.Turn;
+
+		InsertNode(LLHead, *pB);
+		LLTail = LLTail->Next;
+		SetPiece(&LLTail->Board, BestMove.x, BestMove.y, (Setting.UserColor == UC_BLACK) ? 'W' : 'B');
+		UserTurn = TRUE;
+	}
 }
