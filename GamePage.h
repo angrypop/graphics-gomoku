@@ -29,6 +29,8 @@
 #define CHESSBOARD_LEFTBOTTOM_X 0.175
 #define CHESSBOARD_LEFTBOTTOM_Y 0.185
 #define CHESSBOARD_BOXSIZE 0.33
+#define MENU_HEIGHT ((GetFontHeight())*(1.5))
+
 //Macro for buttons id
 #define GP_ID_UNKNOWN 0
 #define GP_ID_UNDO 1
@@ -36,7 +38,7 @@
 #define GP_ID_QUIT 8
 
 // declarations
-void newGamePage(void);
+void GamePage(void);
 
 //structure
 struct Information

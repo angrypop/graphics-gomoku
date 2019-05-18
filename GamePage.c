@@ -44,6 +44,7 @@ static void DrawWhite(int i, int j);
 static void DrawBlack(int i, int j);
 static void DrawInfoBoard();
 static void DrawButtons();
+static void DrawMenu();
 static void MouseEventProcess(int x, int y, int mbutton, int event);
 static void KeyboardEventProcess(int key, int event);
 static void TimerEventProcess(int timerID);
@@ -127,6 +128,7 @@ static void Draw()
 	DrawChessboard();//Draw Chessboard and Chessmen
 	DrawInfoBoard();
 	DrawButtons();
+	DrawMenu();
 
 	EndBatchDraw();
 }
@@ -198,19 +200,19 @@ static void DrawInfoBoard()
 
 	// Draw the text
 	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
-		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT / 5.0,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT / 5.0 - MENU_HEIGHT,
 		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
 		0, Info.turn, 'M', "Black");
 	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
-		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 2.0 / 5.0,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 2.0 / 5.0 - MENU_HEIGHT,
 		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
 		0, Info.side, 'M', "Black");
 	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
-		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3.0 / 5.0,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3.0 / 5.0 - MENU_HEIGHT,
 		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
 		0, Info.argument, 'M', "Black");
 	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
-		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 4.0 / 5.0,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 4.0 / 5.0 - MENU_HEIGHT,
 		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
 		0, Info.now, 'M', "Black");
 }
@@ -235,6 +237,84 @@ static void DrawButtons()
 		"投降"))
 		Surrender = TRUE;
 
+}
+static void DrawMenu()
+{
+	// from Prof. Liu's demo
+	usePredefinedMenuColors(2);
+	static char * menuListMenu[] = { "               Menu",
+		"保存截图(文本) | Ctrl-P", // shortcuts have to use the form of [Ctrl-X] placed at the end of the string
+		"设置   |   Ctrl-S",
+		"帮助   |   Ctrl-H",
+		"返回主菜单 | Ctrl-M",
+		"退出游戏   | Ctrl-E" };
+	static char * selectedLabel = NULL;
+
+	double fH = GetFontHeight();
+	double h = fH * 1.5; // height of controls
+	double w = TextStringWidth(menuListMenu[0]) * 2; // width of the controls
+	double x = GetWindowWidth() - w;
+	double y = GetWindowHeight();
+	double wlist = TextStringWidth(menuListMenu[0]) * 2;
+	double xindent = GetWindowWidth() / 20; // 缩进
+	int    selection;
+	// File 菜单
+	selection = menuList(GenUIID(0), x, y - h, w, wlist, h, menuListMenu, sizeof(menuListMenu) / sizeof(menuListMenu[0]));
+	if (selection > 0) selectedLabel = menuListMenu[selection];
+	// choose to exit
+	if (selection == 5)
+		exit(-1);
+	// read all pixels to .txt file
+	else if (selection == 1)
+	{
+		FILE *fp = NULL;
+		fp = fopen(".\\AllPixel.txt", "w");
+		if (fp == NULL)
+		{
+			InitConsole();
+			printf("Open file ERROR!");
+		}
+		else
+		{
+			ReadAllPixels(fp);
+		}
+	}
+	// Setting
+	else if (selection == 2)
+	{
+		// cancel the callback function in Game Page
+		cancelTimerEvent();
+		cancelKeyboardEvent();
+		cancelMouseEvent();
+		InitConsole();
+		printf("Go to Setting");
+		// the parameter lets the SettingPage function know which page to return to
+		// SettingPage(GAME_PAGE_SETTING);
+	}
+	// Help
+	else if (selection == 3)
+	{
+		// cancel the callback function in Game Page
+		cancelTimerEvent();
+		cancelKeyboardEvent();
+		cancelMouseEvent();
+		InitConsole();
+		printf("Go to Help");
+		// the parameter lets the HelpPage function know which page to return to
+		// HelpPage(GAME_PAGE_SETTING);
+	}
+	// return to Home Page
+	else if (selection == 4)
+	{
+		// cancel the callback function in Game Page
+		cancelTimerEvent();
+		cancelKeyboardEvent();
+		cancelMouseEvent();
+		InitConsole();
+		printf("Go to HomePage");
+		// Go to Home Page
+		//HomePage();
+	}
 }
 static void MouseEventProcess(int x, int y, int mbutton, int event)
 {
