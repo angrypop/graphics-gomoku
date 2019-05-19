@@ -36,7 +36,7 @@ void startTimer(int id,int timeinterval);
 void display(void); 
 
 // mouse event function
-void MouseEventProcess(int x, int y, int button, int event)
+static void MouseEventProcess(int x, int y, int button, int event)
 {
 	uiGetMouse(x,y,button,event); //GUI get mouse
 	display(); // refresh diaplay
@@ -45,7 +45,7 @@ void MouseEventProcess(int x, int y, int button, int event)
 
 // User main program entry
 // Initialize once
-bool EndGamePage (int gameStatus) 
+static bool EndGamePage (int gameStatus) 
 {
 	// Initialization window and graphics system
 	//SetWindowSize(10, 10); // unit - inch
@@ -72,7 +72,7 @@ bool EndGamePage (int gameStatus)
 
 
 //Buttons demonstration program
-void drawButtons()
+static void drawButtons()
 {
 	double fH = GetFontHeight();
 	double h = fH*2;  // conrtol height
@@ -105,7 +105,7 @@ void drawButtons()
 	
 }
 
-void display()
+static void display()
 {
 	// clearscreen
 	DisplayClear();
