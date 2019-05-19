@@ -27,12 +27,22 @@ extern Board B;
 extern LinkedListNode* LLHead;
 extern struct setting Setting;
 
-#ifndef static double winwidth, winheight;
-#define static double winwidth, winheight; 
-#define static int    show_more_buttons = 0; 
-#define static int    show_model = 0;
-#define static int    show_forerunner = 0;
-#define static int    show_color = 0;
+static double winwidth, winheight;
+static double winwidth, winheight; 
+static int    show_more_buttons = 0; 
+static int    show_model = 0;
+static int    show_forerunner = 0;
+static int    show_color = 0;
+
+static void DisplayClear(void);
+static void startTimer(int id, int timeinterval);
+static void display1(void);
+static void display2(void);
+static void display3(void);
+static void MouseEventProcess(int x, int y, int button, int event);
+static void DrawButtons1(void);
+static void DrawButtons2(void);
+static void DrawButtons3(void);
 
 #include "HomePage.h"
 
@@ -123,7 +133,7 @@ static void DrawButtons1()
 	}
 }
 
-static void DrawButtons2(void)
+static void DrawButtons2()
 {
 	double fH = GetFontHeight();
 	double h = fH * 2;
@@ -140,16 +150,18 @@ static void DrawButtons2(void)
 	if (button(GenUIID(0), x + w * 1.2, y - 4 * h, w, h, show_color ? "White" : "Black")) {
 		show_color = !show_color;
 	}
+
 	button(GenUIID(0), x - w * 1.2, y, w, h, "Model");
 	button(GenUIID(0), x - w * 1.2, y - 2 * h, w, h, "Forerunner");
 	button(GenUIID(0), x - w * 1.2, y - 4 * h, w, h, "Color");
+
 	if (button(GenUIID(0), x + w * 1.6, y - 6 * h, w, h, "Back")) {
 		show_more_buttons = 0;
 		HomePage();
 	}
 }
 
-static void DrawButtons3(void)
+static void DrawButtons3()
 {
 	double fH = GetFontHeight();
 	double h = fH * 2;
