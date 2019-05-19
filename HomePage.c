@@ -27,22 +27,22 @@ extern Board B;
 extern LinkedListNode* LLHead;
 extern struct setting Setting;
 
-#ifndef static double winwidth, winheight;
-#define static double winwidth, winheight; 
-#define static int    show_more_buttons = 0; 
-#define static int    show_model = 0;
-#define static int    show_forerunner = 0;
-#define static int    show_color = 0;
 
-#define static void DisplayClear(void);
-#define static void startTimer(int id, int timeinterval);
-#define static void display1(void);
-#define static void display2(void);
-#define static void display3(void);
-#define static void MouseEventProcess(int x, int y, int button, int event);
-#define static void DrawButtons1(void);
-#define static void DrawButtons2(void);
-#define static void DrawButtons3(void);
+double winwidth, winheight; 
+int    show_more_buttons = 0; 
+int    show_model = 0;
+int    show_forerunner = 0;
+int    show_color = 0;
+
+void DisplayClear(void);
+void startTimer(int id, int timeinterval);
+void display1(void);
+void display2(void);
+void display3(void);
+void MouseEventProcess(int x, int y, int button, int event);
+void DrawButtons1(void);
+void DrawButtons2(void);
+void DrawButtons3(void);
 
 #include "HomePage.h"
 

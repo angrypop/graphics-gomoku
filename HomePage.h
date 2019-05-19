@@ -1,6 +1,9 @@
 /*
     provide a homepage,just a start page
 */
+#ifndef _HOMEPAGE_H_
+#define	_HOMEPAGE_H_
+
 
 #include "graphics.h"
 #include "extgraph.h"
@@ -27,4 +30,6 @@ bool HomePage(void);
     show the homepage.
 	Return   :bool
 */
+
+
 #endif
