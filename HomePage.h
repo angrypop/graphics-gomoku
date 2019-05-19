@@ -24,6 +24,8 @@
 
 #include "imgui.h"
 #include "extrafunc.h"
+#include "gomoku.h"
+#include "simpleai.h"
 
 bool HomePage(void);
 /*
