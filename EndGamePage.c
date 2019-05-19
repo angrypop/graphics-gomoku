@@ -98,8 +98,8 @@ void drawButtons()
 		Homepage();
 	}
 		
-	
-	if( button(GenUIID(1), x, y-2*h, w, h, "退出")){
+
+	if( button(GenUIID(0), x, y-2*h, w, h, "退出")){
 		exit(-1);
 	}
 	
