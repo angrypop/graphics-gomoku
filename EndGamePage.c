@@ -95,7 +95,7 @@ void drawButtons()
     
 	if (button(GenUIID(0), x, y, w, h,  "复盘")){
 		show_more_buttons = ! show_more_buttons;
-		Homepage();
+		HomePage();
 	}
 		
 
