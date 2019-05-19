@@ -27,32 +27,24 @@ extern Board B;
 extern LinkedListNode* LLHead;
 extern struct setting Setting;
 
-static double winwidth, winheight;
-static double winwidth, winheight; 
-static int    show_more_buttons = 0; 
-static int    show_model = 0;
-static int    show_forerunner = 0;
-static int    show_color = 0;
+#ifndef static double winwidth, winheight;
+#define static double winwidth, winheight; 
+#define static int    show_more_buttons = 0; 
+#define static int    show_model = 0;
+#define static int    show_forerunner = 0;
+#define static int    show_color = 0;
 
-static void DisplayClear(void);
-static void startTimer(int id, int timeinterval);
-static void display1(void);
-static void display2(void);
-static void display3(void);
-static void MouseEventProcess(int x, int y, int button, int event);
-static void DrawButtons1(void);
-static void DrawButtons2(void);
-static void DrawButtons3(void);
+#define static void DisplayClear(void);
+#define static void startTimer(int id, int timeinterval);
+#define static void display1(void);
+#define static void display2(void);
+#define static void display3(void);
+#define static void MouseEventProcess(int x, int y, int button, int event);
+#define static void DrawButtons1(void);
+#define static void DrawButtons2(void);
+#define static void DrawButtons3(void);
 
 #include "HomePage.h"
-
-// Initialize chessboard
-InitBoard(&B);
-LLHead = (LinkedListNode*)malloc(sizeof(LinkedListNode));
-// Initialize linked list
-LLHead->Next = NULL;
-LLHead->Pre = NULL;
-LLHead->Board = B;
 
 static void MouseEventProcess(int x, int y, int button, int event)
 {
@@ -190,6 +182,14 @@ static void DrawButtons3()
 
 bool HomePage()
 {
+	// Initialize chessboard
+	InitBoard(&B);
+	LLHead = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+	// Initialize linked list
+	LLHead->Next = NULL;
+	LLHead->Pre = NULL;
+	LLHead->Board = B;
+
 	SetWindowSize(5, 5);
 	InitGraphics();
 
