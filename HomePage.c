@@ -21,6 +21,8 @@
 
 #include "imgui.h"
 #include "extrafunc.h"
+#include "gomoku.h"
+#include "simpleai.h"
 
 // extern Global variables
 extern Board B;
@@ -206,4 +208,3 @@ bool HomePage()
 	DrawButtons1();	
 }
 
-#endif
