@@ -17,6 +17,7 @@
 #include "GamePage.h"
 #include "extrafunc.h"
 #include "gomoku.h"
+#include "simpleai.h"
 #include "Main.h"
 #include "imgui.h"
 #include <time.h>
