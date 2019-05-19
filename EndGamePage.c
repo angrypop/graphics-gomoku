@@ -47,10 +47,10 @@ void MouseEventProcess(int x, int y, int button, int event)
 // Initialize once
 bool EndGamePage (int gameStatus) 
 {
-	// 初始化窗口和图形系统
-	//SetWindowSize(10, 10); // 单位 - 英寸
+	// Initialization window and graphics system
+	//SetWindowSize(10, 10); // unit - inch
 	//SetWindowSize(20, 10);
-	//SetWindowSize(10, 20);  // 如果屏幕尺寸不够，则按比例缩小
+	//SetWindowSize(10, 20);  // If the screen size is not enough ,scale it down
     InitGraphics();
 
     
@@ -95,13 +95,12 @@ void drawButtons()
     
 	if (button(GenUIID(0), x, y, w, h,  "复盘")){
 		show_more_buttons = ! show_more_buttons;
-		PlayAgain=TRUE;
+		Homepage();
 	}
 		
 	
-	if( button(GenUIID(0), x, y-2*h, w, h, "退出")){
+	if( button(GenUIID(1), x, y-2*h, w, h, "退出")){
 		exit(-1);
-		PlayAgain=FALSE;
 	}
 	
 }
