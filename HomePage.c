@@ -68,6 +68,7 @@ static void display1()
 static void display2()
 {
 	DisplayClear();
+	ShowBmp("SettingBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
 	DrawButtons2();
 }
 
@@ -133,21 +134,21 @@ static void DrawButtons2()
 	double y = winheight / 2 - h;
 	double w = winwidth / 5;
 
-	if (button(GenUIID(0), x + w * 1.2, y, w, h, show_model ? "Mouse" : "KeyBoard")) {
+	if (button(GenUIID(0), x + w * 1.2, y + 3 * h, w, h, show_model ? "Mouse" : "KeyBoard")) {
 		show_model = !show_model;
 	}
-	if (button(GenUIID(0), x + w * 1.2, y - 2 * h, w, h, show_forerunner ? "You" : "Opponent")) {
+	if (button(GenUIID(0), x + w * 1.2, y + 1 * h, w, h, show_forerunner ? "You" : "Opponent")) {
 		show_forerunner = !show_forerunner;
 	}
-	if (button(GenUIID(0), x + w * 1.2, y - 4 * h, w, h, show_color ? "White" : "Black")) {
+	if (button(GenUIID(0), x + w * 1.2, y - 1 * h, w, h, show_color ? "White" : "Black")) {
 		show_color = !show_color;
 	}
 
-	button(GenUIID(0), x - w * 1.2, y, w, h, "Model");
-	button(GenUIID(0), x - w * 1.2, y - 2 * h, w, h, "Forerunner");
-	button(GenUIID(0), x - w * 1.2, y - 4 * h, w, h, "Color");
+	button(GenUIID(0), x - w * 1.2, y + 3 * h, w, h, "Model");
+	button(GenUIID(0), x - w * 1.2, y + 1 * h, w, h, "Forerunner");
+	button(GenUIID(0), x - w * 1.2, y - 1 * h, w, h, "Color");
 
-	if (button(GenUIID(0), x + w * 1.6, y - 6 * h, w, h, "Back")) {
+	if (button(GenUIID(0), x + w * 1.6, y - 3 * h, w, h, "Back")) {
 		show_more_buttons = 0;
 		HomePage();
 	}
