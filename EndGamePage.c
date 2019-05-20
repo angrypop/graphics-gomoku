@@ -1,47 +1,7 @@
 /*
     provide a endgamepage,just a end page
-*/ 
-#include "graphics.h"
-#include "extgraph.h"
-#include "genlib.h"
-#include "simpio.h"
-#include "conio.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <stddef.h>
 
-#include <windows.h>
-#include <olectl.h>
-#include <mmsystem.h>
-#include <wingdi.h>
-#include <ole2.h>
-#include <ocidl.h>
-#include <winuser.h>
-
-#include "imgui.h"
 #include "EndGamePage.h"
-
-
-// global variable
-static int GameStatus;
-static double winwidth, winheight;   // window size
-static int    show_more_buttons = 0; // show more button
-
-// clear sceen function，provided in libgraphics
-void DisplayClear(void); 
-// timer function，provided in libgraphics
-void startTimer(int id,int timeinterval);
-
-// display function
-void display(void); 
-
-// mouse event function
-static void MouseEventProcess(int x, int y, int button, int event)
-{
-	uiGetMouse(x,y,button,event); //GUI get mouse
-	display(); // refresh diaplay
-}
-
 
 // User main program entry
 // Initialize once
@@ -69,7 +29,12 @@ static bool EndGamePage (int gameStatus)
 }
 
 
-
+// mouse event function
+static void MouseEventProcess(int x, int y, int button, int event)
+{
+	uiGetMouse(x,y,button,event); //GUI get mouse
+	display(); // refresh diaplay
+}
 
 //Buttons demonstration program
 static void drawButtons()
