@@ -8,7 +8,7 @@
 
 // User main program entry
 // Initialize once
-static bool EndGamePage (int gameStatus) 
+ bool EndGamePage (int gameStatus) 
 {
 	// Initialization window and graphics system
 	//SetWindowSize(10, 10); // unit - inch
@@ -33,14 +33,14 @@ static bool EndGamePage (int gameStatus)
 
 
 // mouse event function
-static void MouseEventProcess(int x, int y, int button, int event)
+ void MouseEventProcess(int x, int y, int button, int event)
 {
 	uiGetMouse(x,y,button,event); //GUI get mouse
 	display(); // refresh diaplay
 }
 
 //Buttons demonstration program
-static void drawButtons()
+ void drawButtons()
 {
 	double fH = GetFontHeight();
 	double h = fH*2;  // conrtol height
@@ -74,13 +74,13 @@ static void drawButtons()
 }
 
 // mouse event function
-static void MouseEventProcess(int x, int y, int button, int event)
+ void MouseEventProcess(int x, int y, int button, int event)
 {
 	uiGetMouse(x,y,button,event); //GUI get mouse
 	display(); // refresh diaplay
 }
 
-static void display()
+ void display()
 {
 	// clearscreen
 	DisplayClear();
