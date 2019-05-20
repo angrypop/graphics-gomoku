@@ -1,6 +1,9 @@
 /*
     provide a endgamepage,just a end page
+*/
 
+#ifndef END_GAME_PAGE_C
+#define END_GAME_PAGE_C
 #include "EndGamePage.h"
 
 // User main program entry
@@ -85,3 +88,5 @@ static void display()
 	// button
 	drawButtons();
 }
+
+#endif
