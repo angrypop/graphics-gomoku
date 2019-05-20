@@ -29,7 +29,7 @@
  double winwidth, winheight;   
  int    show_more_buttons = 0; 
 
-
+//function
 void DisplayClear(void); 
 void MouseEventProcess(int x, int y, int button, int event);
 void display(void); 
