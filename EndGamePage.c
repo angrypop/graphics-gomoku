@@ -70,6 +70,13 @@ static void drawButtons()
 	
 }
 
+// mouse event function
+static void MouseEventProcess(int x, int y, int button, int event)
+{
+	uiGetMouse(x,y,button,event); //GUI get mouse
+	display(); // refresh diaplay
+}
+
 static void display()
 {
 	// clearscreen
