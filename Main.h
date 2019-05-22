@@ -31,10 +31,13 @@
 #define DRAW_ID 1
 
 // Macro for Setting
+// Operation
 #define OP_KEYBOARD 1
 #define OP_MOUSE 0
+// First Move
 #define FM_WHITE 1
 #define FM_BLACK 0
+// User Color
 #define UC_WHITE 1
 #define UC_BLACK 0
 
