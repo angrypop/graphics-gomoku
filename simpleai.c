@@ -14,6 +14,11 @@
 #include "time.h"
 #include "windows.h"
 
+int EvaluationCount;
+double ShapeCount[DIMENSION + 1];
+double ShapeWeight[DIMENSION + 1] = { 5000000,1000000,250,300,260,300,60,80,60,55,65,15,55,40 };
+unsigned long long ZobristHash[BOARDSIZE + 1][BOARDSIZE + 1][3];
+
 void ReadWeights() {
 	freopen("weights.txt", "r", stdin);
 	int i = 0;

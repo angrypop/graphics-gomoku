@@ -17,10 +17,6 @@
 #define HSTHERESHOLD 30
 #define SEARCHDEPTH 4
 
-int EvaluationCount;
-double ShapeCount[DIMENSION + 1];
-double ShapeWeight[DIMENSION + 1];
-unsigned long long ZobristHash[BOARDSIZE + 1][BOARDSIZE + 1][3];
 /* 
 	(Below denote A for friendly pieces, ? for blank positions)
 	TERM	SHAPE		NO.
