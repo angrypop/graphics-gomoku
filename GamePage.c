@@ -503,7 +503,7 @@ static void UpdateInfo()
 	else
 		Info.side = "白棋： 你   黑棋： AI ";
 	//Update Turns
-	Info.turn = Concat("当前回合数：  ", IntegerToString(B.Turn));
+	Info.turn = Concat("当前回合数：  ", IntegerToString(LLTail->Board.Turn));
 	//Update argument
 	//Info.argument = Concat("当前参数：  ", IntegerToString());
 	//Update current turn
@@ -536,7 +536,7 @@ static void UpdateInfo()
 }
 static void CheckResult()
 {
-	char result = CheckWin(B);
+	char result = CheckWin(LLTail->Board);
 	switch (result)
 	{
 	case 'W':
