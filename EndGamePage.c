@@ -50,13 +50,13 @@
 
 	MovePen(winwidth/3,winheight/3*2);
 	switch (GameStatus){
-	 case WIN:
+	 case GAME_WIN:
          DrawTextString("you are  WINNING!");
          break;
-	 case LOSE:
+	 case GAME_LOSE:
 	     DrawTextString("you are  LOSING!");
 	     break;
-	 case SUREENDER: 
+	 case GAME_SUREENDER: 
 	     DrawTextString("you are  SUREENDER!"); 
 	     break;
 	 }
