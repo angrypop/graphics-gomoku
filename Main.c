@@ -16,6 +16,7 @@
 #include <winuser.h>
 #include "Main.h"
 #include "gomoku.h"
+#include "HomePage.h"
 
 // Global variables
 LinkedListNode *LLHead;// the head of the linked list
