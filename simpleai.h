@@ -8,16 +8,19 @@
 #include "stdio.h"
 
 #define DIMENSION 13
-#define SEARCHDEPTH 4 /* Must be even! */
 #define DETECTDISTANCE 1
 #define HUMANSIDE 'W'
 #define AISIDE 'B'
 #define ATTACK 1.0
 #define DEFENSE 1.5
+#define HASHDIGITS 15 /* 2^48 ~= 10^15 */
+#define HSTHERESHOLD 30
+#define SEARCHDEPTH 4
 
+int EvaluationCount;
 double ShapeCount[DIMENSION + 1];
 double ShapeWeight[DIMENSION + 1];
-unsigned long long ZobristHash[BOARDSIZE + 1][BOARDSIZE + 1];
+unsigned long long ZobristHash[BOARDSIZE + 1][BOARDSIZE + 1][3];
 /* 
 	(Below denote A for friendly pieces, ? for blank positions)
 	TERM	SHAPE		NO.
@@ -64,7 +67,7 @@ Position GetBestMove(Board B, char Side);
 */
 
 void InitAI();
-
+static double EvaluatePosition(Board B, char Side, int TagX, int TagY);
 static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Side, int IsMaxMin);
 static int	CMP(const void *A, const void *B);
 #endif
