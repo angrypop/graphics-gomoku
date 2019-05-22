@@ -21,13 +21,11 @@
 #include <winuser.h>
 
 #include "imgui.h"
+#include "Main.h"
 
 
 
-// global variable
- int GameStatus;
- double winwidth, winheight;   
- int    show_more_buttons = 0; 
+
 
 //function
 void DisplayClear(void); 

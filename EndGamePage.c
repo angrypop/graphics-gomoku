@@ -6,6 +6,12 @@
 #define END_GAME_PAGE_C
 #include "EndGamePage.h"
 
+// global variable
+static int GameStatus;
+static double winwidth, winheight;
+static int    show_more_buttons = 0;
+
+static void MouseEventProcess(int x, int y, int button, int event);
 // User main program entry
 // Initialize once
  bool EndGamePage (int gameStatus) 
@@ -32,13 +38,6 @@
 }
 
 
-// mouse event function
- void MouseEventProcess(int x, int y, int button, int event)
-{
-	uiGetMouse(x,y,button,event); //GUI get mouse
-	display(); // refresh diaplay
-}
-
 //Buttons demonstration program
  void drawButtons()
 {
@@ -50,13 +49,13 @@
 
 	MovePen(winwidth/3,winheight/3*2);
 	switch (GameStatus){
-	 case WIN:
+	 case GAME_WIN:
          DrawTextString("you are  WINNING!");
          break;
-	 case LOSE:
+	 case GAME_LOSE:
 	     DrawTextString("you are  LOSING!");
 	     break;
-	 case SUREENDER: 
+	 case GAME_SURRENDER: 
 	     DrawTextString("you are  SUREENDER!"); 
 	     break;
 	 }
@@ -67,14 +66,14 @@
 	}
 		
 
-	if( button(GenUIID(0), x, y-2*h, w, h, "退出")){
-		exit(-1);
-	}
+	//if( button(GenUIID(0), x, y-2*h, w, h, "退出")){
+	//	exit(-1);
+	//}
 	
 }
 
 // mouse event function
- void MouseEventProcess(int x, int y, int button, int event)
+static  void MouseEventProcess(int x, int y, int button, int event)
 {
 	uiGetMouse(x,y,button,event); //GUI get mouse
 	display(); // refresh diaplay
