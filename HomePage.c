@@ -23,6 +23,8 @@
 #include "extrafunc.h"
 #include "gomoku.h"
 #include "simpleai.h"
+#include "HomePage.h"
+#include "GamePage.h"
 
 // extern Global variables
 extern Board B;
@@ -30,24 +32,24 @@ extern LinkedListNode* LLHead;
 extern struct setting Setting;
 
 
-double winwidth, winheight; 
-int    show_more_buttons = 0; 
-int    show_model = 0;
-int    show_forerunner = 0;
-int    show_color = 0; 
-int    show_level = 0;
+static double winwidth, winheight; 
+static int    show_more_buttons = 0; 
+static int    show_model = 0;
+static int    show_forerunner = 0;
+static int    show_color = 0; 
+static int    show_level = 0;
 
 void DisplayClear(void);
-void startTimer(int id, int timeinterval);
-void display1(void);
-void display2(void);
-void display3(void);
-void MouseEventProcess(int x, int y, int button, int event);
-void DrawButtons1(void);
-void DrawButtons2(void);
-void DrawButtons3(void);
 
-#include "HomePage.h"
+static void display1(void);
+static void display2(void);
+static void display3(void);
+static void MouseEventProcess(int x, int y, int button, int event);
+static void DrawButtons1(void);
+static void DrawButtons2(void);
+static void DrawButtons3(void);
+
+
 
 static void MouseEventProcess(int x, int y, int button, int event)
 {
@@ -55,7 +57,11 @@ static void MouseEventProcess(int x, int y, int button, int event)
 	switch (show_more_buttons)
 	{
 	case 0:display1(); break;
-	case 1:cancelMouseEvent; GamePage(); break;
+	case 1:
+		cancelMouseEvent(MouseEventProcess);
+		GamePage();
+		return;
+		break;
 	case 2:display2(); break;
 	case 3:display3(); break;
 	}

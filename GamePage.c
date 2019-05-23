@@ -76,12 +76,6 @@ static void InitGamePage()
 	// close previous window here
 	InitAI();
 
-	double ix, iy;
-	ix = GAME_PAGE_WIDTH;
-	iy = GAME_PAGE_HEIGHT;
-	SetWindowSize(ix, iy);
-	InitGraphics();
-
 	// initialize the information 
 	if (Setting.UserColor == UC_BLACK)
 		Info.side = "°×Æå£º AI   ºÚÆå£º Äã  ";
@@ -109,6 +103,8 @@ static void InitGamePage()
 
 	// initialize the linked list tail
 	LLTail = LLHead;
+
+	Draw();
 }
 static void TimerEventProcess(int timerID)
 {

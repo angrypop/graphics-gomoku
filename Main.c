@@ -25,8 +25,6 @@ struct setting Setting = { OP_MOUSE, FM_BLACK, UC_BLACK }; // the setting of the
 
 void Main()
 {
-	// start the timer for drawing
-	startTimer(DRAW_ID, DRAW_INTERVAL);
 	// Go to the Home Page
 	HomePage();
 }
