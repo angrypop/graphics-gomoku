@@ -22,13 +22,6 @@ static double EvaluatePosition(Board B, char Side, int TagX, int TagY);
 static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Side, int IsMaxMin);
 static int	CMP(const void *A, const void *B);
 
-void ReadWeights() {
-	freopen("weights.txt", "r", stdin);
-	int i = 0;
-	for (i = 0; i <= DIMENSION; i++) scanf("%lf", &ShapeWeight[i]);
-	freopen("CON", "r", stdin);/* Works for Windows/DOS environment only */
-}
-
 double EvaluatePosition(Board B, char Side, int TagX, int TagY) {
 	int x, y, dx, dy; double Score = 0;
 	for (x = TagX-2; x <= TagX+2; x++)
@@ -312,7 +305,7 @@ Position GetBestMove(Board B, char Side) {
 		return (Position) { 8, 8, 0 };
 	}
 	EvaluationCount = 0;
-	return DFS(0, &B, INF, -INF, AISIDE, 1);
+	return DFS(0, &B, INF, -INF, Side, 1);
 }
 
 static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Side, int IsMaxMin) {
@@ -322,7 +315,7 @@ static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Sid
 	else Ret.Score = INF;
 
 	if (Layor == SEARCHDEPTH) {
-		return (Position) { 0, 0, ATTACK * Evaluate(*Board, AISIDE) - DEFENSE * Evaluate(*Board, HUMANSIDE) };
+		return (Position) { 0, 0, ATTACK * Evaluate(*Board, Side) - DEFENSE * Evaluate(*Board, OppoSide) };
 		/* My evaluation - Opponent's evaluation */
 	}
 
