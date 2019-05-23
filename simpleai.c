@@ -15,9 +15,12 @@
 #include "windows.h"
 
 int EvaluationCount;
-double ShapeCount[DIMENSION + 1];
 double ShapeWeight[DIMENSION + 1] = { 5000000,1000000,250,300,260,300,60,80,60,55,65,15,55,40 };
 unsigned long long ZobristHash[BOARDSIZE + 1][BOARDSIZE + 1][3];
+
+static double EvaluatePosition(Board B, char Side, int TagX, int TagY);
+static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Side, int IsMaxMin);
+static int	CMP(const void *A, const void *B);
 
 void ReadWeights() {
 	freopen("weights.txt", "r", stdin);
@@ -353,6 +356,7 @@ static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Sid
 		}
 	}
 	qsort(ValidPositions, QueueTail, sizeof(Position), CMP);
+	if (QueueTail > HSTHERESHOLD) QueueTail = HSTHERESHOLD;
 
 	for (head = 0; head < QueueTail; head++){
 		x = ValidPositions[head].x; y = ValidPositions[head].y;
@@ -374,7 +378,7 @@ static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Sid
 				Ret.x = x;
 				Ret.y = y;
 			}
-			if (SonRet.Score > Alpha) return Ret;/* Alpha-Beta Pruning */
+			if (SonRet.Score >= Alpha) return Ret;/* Alpha-Beta Pruning */
 		}
 		else {
 			if (SonRet.Score < Ret.Score) {
@@ -382,7 +386,7 @@ static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Sid
 				Ret.x = x;
 				Ret.y = y;
 			}
-			if (SonRet.Score < Beta) return Ret;/* Alpha-Beta Pruning */
+			if (SonRet.Score <= Beta) return Ret;/* Alpha-Beta Pruning */
 		}
 	}
 	if (IsMaxMin) return Ret;
