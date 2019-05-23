@@ -16,8 +16,8 @@
 #include <winuser.h>
 #include "GamePage.h"
 #include "extrafunc.h"
-#include "gomoku.h"
 #include "simpleai.h"
+#include "gomoku.h"
 #include "Main.h"
 #include "imgui.h"
 #include <time.h>
@@ -34,7 +34,7 @@ extern struct setting Setting;
 static struct Information Info;
 static bool UserTurn;
 static int GameStatus;
-static LinkedListNode *LLTail;
+static LinkedListNode *LLTail = NULL; // the tail of the Linked List
 static Position Cur = { 8 ,8 }; // the coordinates of the current position
 static bool Undo = FALSE; // store the status of the button UNDO
 static bool Surrender = FALSE; // store the status of the button SURRENDER
@@ -55,15 +55,15 @@ static void UpdateInfo();
 static void CheckResult();
 static void AbsDelay(int interval);
 static void CheckAI();
+static void CopyBoard(Board* DesB, Board* OriB);
 
 void GamePage()
 {
 	InitGamePage();
-	
-	// start the timer for drawing
-	startTimer(DRAW_ID, DRAW_INTERVAL);
-
 	// register the callback function of Game Page
+	// start the timer for drawing
+	
+	startTimer(DRAW_ID, DRAW_INTERVAL);
 	registerTimerEvent(TimerEventProcess);
 	registerKeyboardEvent(KeyboardEventProcess);
 	registerMouseEvent(MouseEventProcess);
@@ -106,13 +106,16 @@ static void InitGamePage()
 	// initialize the linked list tail
 	LLTail = LLHead;
 
+	
 	Draw();
 }
 static void TimerEventProcess(int timerID)
 {
+	
 	switch (timerID)
 	{
 	case DRAW_ID:
+	
 		UpdateInfo();
 		Draw();
 		CheckResult();
@@ -321,6 +324,7 @@ static void DrawMenu()
 }
 static void MouseEventProcess(int x, int y, int mbutton, int event)
 {
+	
 	uiGetMouse(x, y, mbutton, event);
 
 	//Check whether the mouse is outside the chessboard
@@ -357,8 +361,7 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 		cancelTimerEvent();
 		cancelKeyboardEvent();
 		cancelMouseEvent();
-		// close the current canvas
-		 
+		
 		// Go to End Game Page with the infomation of surrender
 		EndGamePage(GAME_SURRENDER);
 	}
@@ -395,20 +398,8 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 						Board *pB = NULL;
 						pB = (Board *)malloc(sizeof(Board));
 						InitBoard(pB);
-						// copy the old board to the new one
-						int i, j;
-						for (i = 1; i <= BOARDSIZE; i++)
-						{
-							for (j = 1; j <= BOARDSIZE; j++)
-							{
-								if ('W' == LLTail->Board.BoardStatus[i][j])
-									pB->BoardStatus[i][j] = 'W';
-								else if ('B' == LLTail->Board.BoardStatus[i][j])
-									pB->BoardStatus[i][j] = 'B';
-							}
-						}
-						pB->Turn = LLTail->Board.Turn;
-
+						// copy the original board to the destination one
+						CopyBoard(pB, &LLTail->Board);
 						InsertNode(LLHead, *pB);
 						LLTail = LLTail->Next;
 						SetPiece(&LLTail->Board, Cur.x, Cur.y, (Setting.UserColor == UC_BLACK) ? 'B' : 'W');
@@ -428,7 +419,7 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 }
 static void KeyboardEventProcess(int key, int event)
 {
-	uiGetKeyboard(key, event);
+	 uiGetKeyboard(key, event);
 
 
 	if (Setting.Operation == OP_KEYBOARD)
@@ -449,20 +440,8 @@ static void KeyboardEventProcess(int key, int event)
 						Board *pB;
 						pB = (Board *)malloc(sizeof(Board));
 						InitBoard(pB);
-						// copy the old board to the new one
-						int i, j;
-						for (i = 1; i <= BOARDSIZE; i++)
-						{
-							for (j = 1; j <= BOARDSIZE; j++)
-							{
-								if ('W' == LLTail->Board.BoardStatus[i][j])
-									pB->BoardStatus[i][j] = 'W';
-								else if ('B' == LLTail->Board.BoardStatus[i][j])
-									pB->BoardStatus[i][j] = 'B';
-							}
-						}
-						pB->Turn = LLTail->Board.Turn;
-
+						// copy the original board to the destination one
+						CopyBoard(pB, &LLTail->Board);
 						InsertNode(LLHead, *pB);
 						LLTail = LLTail->Next;
 						SetPiece(&LLTail->Board, Cur.x, Cur.y, (Setting.UserColor == UC_BLACK) ? 'B' : 'W');
@@ -538,7 +517,7 @@ static void UpdateInfo()
 }
 static void CheckResult()
 {
-	char result = CheckWin(LLTail->Board);
+	char result = CheckWin(B);
 	switch (result)
 	{
 	case 'W':
@@ -549,8 +528,7 @@ static void CheckResult()
 			cancelTimerEvent();
 			cancelKeyboardEvent();
 			cancelMouseEvent();
-			// close the current canvas
-			 
+			
 			// Go to End Game Page with the infomation of winning
 			EndGamePage(GAME_WIN);
 			break;
@@ -559,8 +537,7 @@ static void CheckResult()
 			cancelTimerEvent();
 			cancelKeyboardEvent();
 			cancelMouseEvent();
-			// close the current canvas
-			 
+			
 			// Go to End Game Page with the infomation of lost
 			EndGamePage(GAME_LOSE);
 			break;
@@ -574,8 +551,6 @@ static void CheckResult()
 			cancelTimerEvent();
 			cancelKeyboardEvent();
 			cancelMouseEvent();
-			// close the current canvas
-			 
 			// Go to End Game Page with the infomation of winning
 			EndGamePage(GAME_WIN);
 			break;
@@ -584,8 +559,6 @@ static void CheckResult()
 			cancelTimerEvent();
 			cancelKeyboardEvent();
 			cancelMouseEvent();
-			// close the current canvas
-			 
 			// Go to End Game Page with the infomation of lost
 			EndGamePage(GAME_LOSE);
 			break;
@@ -615,30 +588,49 @@ static void AbsDelay(int interval)
 }
 static void CheckAI()
 {
+	if (LLTail == NULL)
+		LLTail = LLHead;
 	// AI set piece
 	if (!UserTurn)
 	{
+		// draw notice -- not to press 
+		MovePen(GAME_PAGE_WIDTH / 4.0, GAME_PAGE_HEIGHT / 2.0);
+		DrawTextString("PLEASE WAIT FOR AI");
+		Draw();
+		
+		// get the best move
 		Position BestMove = GetBestMove(LLTail->Board, (Setting.UserColor == UC_BLACK) ? 'W' : 'B');
 		Board *pB;
 		pB = (Board *)malloc(sizeof(Board));
 		InitBoard(pB);
-		// copy the old board to the new one
-		int i, j;
-		for (i = 1; i <= BOARDSIZE; i++)
-		{
-			for (j = 1; j <= BOARDSIZE; j++)
-			{
-				if ('W' == LLTail->Board.BoardStatus[i][j])
-					pB->BoardStatus[i][j] = 'W';
-				else if ('B' == LLTail->Board.BoardStatus[i][j])
-					pB->BoardStatus[i][j] = 'B';
-			}
-		}
-		pB->Turn = LLTail->Board.Turn;
+		// copy the original board to the destination one
+		CopyBoard(pB, &LLTail->Board);
 
 		InsertNode(LLHead, *pB);
 		LLTail = LLTail->Next;
 		SetPiece(&LLTail->Board, BestMove.x, BestMove.y, (Setting.UserColor == UC_BLACK) ? 'W' : 'B');
 		UserTurn = TRUE;
 	}
+
+}
+static void CopyBoard(Board* DesB, Board* OriB)
+{
+	// copy the original board to the destination board
+	int i, j;
+	for (i = 1; i <= BOARDSIZE; i++)
+	{
+		for (j = 1; j <= BOARDSIZE; j++)
+		{
+			if ('W' == OriB->BoardStatus[i][j])
+				DesB->BoardStatus[i][j] = 'W';
+			else if ('B' == OriB->BoardStatus[i][j])
+				DesB->BoardStatus[i][j] = 'B';
+		}
+	}
+	DesB->Turn = OriB->Turn;
+	DesB->HashValue = OriB->HashValue;
+	DesB->Xmax = OriB->Xmax;
+	DesB->Xmin = OriB->Xmin;
+	DesB->Ymax = OriB->Ymax;
+	DesB->Ymin = OriB->Ymin;
 }

@@ -71,14 +71,14 @@ static void MouseEventProcess(int x, int y, int button, int event)
 static void display1()
 {
 	DisplayClear();
-	ShowBmp("HomePageBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
+	ShowBmp(".\\pictures\\HomePageBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
 	DrawButtons1();
 }
 
 static void display2()
 {
 	DisplayClear();
-	ShowBmp("SettingBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
+	ShowBmp(".\\pictures\\SettingBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
 	DrawButtons2();
 }
 
@@ -136,7 +136,7 @@ static void DrawButtons2()
 		else
 			Setting.UserColor = UC_BLACK;
 		show_color = !show_color;
-
+		
 	}
 	button(GenUIID(0), x - w * 1.2, y + 5 * h, w, h, "Level");
 	button(GenUIID(0), x - w * 1.2, y + 3 * h, w, h, "Model");
@@ -195,7 +195,7 @@ bool HomePage()
 	registerMouseEvent(MouseEventProcess);
 
 	StartBatchDraw();
-	ShowBmp("HomePageBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
+	ShowBmp(".\\pictures\\HomePageBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
 	EndBatchDraw();
 	
 	DrawButtons1();	
