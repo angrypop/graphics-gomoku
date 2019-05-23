@@ -21,6 +21,8 @@
 #include "Main.h"
 #include "imgui.h"
 #include <time.h>
+#include "HomePage.h"
+#include "EndGamePage.h"
 
 
 // extern Global variables
