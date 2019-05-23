@@ -25,6 +25,7 @@
 #include "simpleai.h"
 #include "HomePage.h"
 #include "GamePage.h"
+#include "Main.h"
 
 // extern Global variables
 extern Board B;
@@ -115,14 +116,27 @@ static void DrawButtons2()
 	if (button(GenUIID(0), x + w * 1.2, y + 5 * h, w, h, show_level ? "Easy" : "Difficult")) {
 		show_level = !show_level;
 	}
-	if (button(GenUIID(0), x + w * 1.2, y + 3 * h, w, h, show_model ? "Mouse" : "KeyBoard")) {
+	if (button(GenUIID(0), x + w * 1.2, y + 3 * h, w, h, !show_model ? "Mouse" : "KeyBoard")) {
+		if (show_model)
+			Setting.Operation = OP_MOUSE;
+		else
+			Setting.Operation = OP_KEYBOARD;
 		show_model = !show_model;
 	}
-	if (button(GenUIID(0), x + w * 1.2, y + 1 * h, w, h, show_forerunner ? "You" : "Opponent")) {
+	if (button(GenUIID(0), x + w * 1.2, y + 1 * h, w, h, !show_forerunner ? "You" : "Opponent")) {
+		if (show_forerunner)
+			Setting.FirstMove = (Setting.UserColor == UC_BLACK) ? FM_BLACK : FM_WHITE;
+		else
+			Setting.FirstMove = (Setting.UserColor == UC_WHITE) ? FM_BLACK : FM_WHITE;
 		show_forerunner = !show_forerunner;
 	}
 	if (button(GenUIID(0), x + w * 1.2, y - 1 * h, w, h, show_color ? "White" : "Black")) {
+		if (!show_color)
+			Setting.UserColor = UC_WHITE;
+		else
+			Setting.UserColor = UC_BLACK;
 		show_color = !show_color;
+
 	}
 	button(GenUIID(0), x - w * 1.2, y + 5 * h, w, h, "Level");
 	button(GenUIID(0), x - w * 1.2, y + 3 * h, w, h, "Model");
