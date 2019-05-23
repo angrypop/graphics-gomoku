@@ -517,7 +517,7 @@ static void UpdateInfo()
 }
 static void CheckResult()
 {
-	char result = CheckWin(B);
+	char result = CheckWin(LLTail->Board);
 	switch (result)
 	{
 	case 'W':
@@ -562,7 +562,7 @@ static void CheckResult()
 			// Go to End Game Page with the infomation of lost
 			EndGamePage(GAME_LOSE);
 			break;
-			break;
+			
 		default:
 			break;
 		}
