@@ -307,6 +307,10 @@ double Evaluate(Board B, char Side) {
 }
 
 Position GetBestMove(Board B, char Side) {
+	if (B.Turn == 0) {
+		SetPiece(&B, 8, 8, Side);
+		return (Position) { 8, 8, 0 };
+	}
 	EvaluationCount = 0;
 	return DFS(0, &B, INF, -INF, AISIDE, 1);
 }
