@@ -63,7 +63,4 @@ Position GetBestMove(Board B, char Side);
 */
 
 void InitAI();
-static double EvaluatePosition(Board B, char Side, int TagX, int TagY);
-static Position DFS(int Layor, Board *Board, double Alpha, double Beta, char Side, int IsMaxMin);
-static int	CMP(const void *A, const void *B);
 #endif
