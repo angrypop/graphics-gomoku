@@ -401,7 +401,6 @@ static int	CMP(const void *A, const void *B) {
 }
 
 void InitAI() {
-	ReadWeights();
 	srand((unsigned)time(NULL));
 	int x, y, t;
 	for (x = 0; x <= BOARDSIZE; x++) {
