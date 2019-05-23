@@ -57,6 +57,10 @@ static void CheckAI();
 void GamePage()
 {
 	InitGamePage();
+	
+	// start the timer for drawing
+	startTimer(DRAW_ID, DRAW_INTERVAL);
+
 	// register the callback function of Game Page
 	registerTimerEvent(TimerEventProcess);
 	registerKeyboardEvent(KeyboardEventProcess);
@@ -152,7 +156,7 @@ static void DrawChessboard()
 	}
 
 	// Draw the instruction
-	if (B.BoardStatus[Cur.x][Cur.y] == 'N')
+	if (LLTail->Board.BoardStatus[Cur.x][Cur.y] == 'N')
 	{
 		SetPenColor("Red");
 		MovePen(CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1 + 0.4) * CHESSBOARD_BOXSIZE,
