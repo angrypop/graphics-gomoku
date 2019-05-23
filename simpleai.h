@@ -12,7 +12,7 @@
 #define HUMANSIDE 'W'
 #define AISIDE 'B'
 #define ATTACK 1.0
-#define DEFENSE 1.5
+#define DEFENSE 1.1
 #define HASHDIGITS 15 /* 2^48 ~= 10^15 */
 #define HSTHERESHOLD 30
 #define SEARCHDEPTH 4
