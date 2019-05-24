@@ -26,7 +26,7 @@ double EvaluatePosition(Board B, char Side, int TagX, int TagY) {
 	int x, y, dx, dy; double Score = 0;
 	for (x = TagX-2; x <= TagX+2; x++)
 	for (y = TagY-2; y <= TagY+2; y++)
-	for (dx = 0; dx <= 1; dx++) {
+	for (dx = -1; dx <= 1; dx++) {
 		for (dy = -1; dy <= 1; dy++) {
 			if (dx == 0 && dy == 0) continue;
 			if (x + 4 * dx <= BOARDSIZE && x + 4 * dx >= 1 && y + 4 * dy <= BOARDSIZE && y + 4 * dy >= 1 &&
