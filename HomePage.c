@@ -96,13 +96,15 @@ static void DrawButtons1()
 	double y = winheight / 2 - h;
 	double w = winwidth / 5;
 
-	if (button(GenUIID(0), x + 3.5 * w, y + 2 * h, w, h, "Strating"))
+	if (button(GenUIID(0), x + 3.5 * w, y + 7 * h, w, h, "Strating"))
 		show_more_buttons = 1;
-	if (button(GenUIID(0), x + 3.5 * w, y + 4 * h, w, h, "Setting")) {
+	if (button(GenUIID(0), x + 3.5 * w, y + 5 * h, w, h, "Setting")) {
 		show_more_buttons = 2;
 	}
-	if (button(GenUIID(0), x + 3.5 * w, y + 6 * h, w, h, "Helping"))
+	if (button(GenUIID(0), x + 3.5 * w, y + 3 * h, w, h, "Helping"))
 		show_more_buttons = 3;
+	if (button(GenUIID(0), x + 3.5 * w, y + 1 * h, w, h, "Exit"))
+		exit(-1);
 }
 
 static void DrawButtons2()
