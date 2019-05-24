@@ -71,14 +71,14 @@ static void MouseEventProcess(int x, int y, int button, int event)
 static void display1()
 {
 	DisplayClear();
-	ShowBmp(".\\pictures\\HomePageBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
+	ShowBmp(".\\pictures\\HomePageBackground_5x7.bmp", 0, 0, winwidth + 2, winheight, SRCCOPY);
 	DrawButtons1();
 }
 
 static void display2()
 {
 	DisplayClear();
-	ShowBmp(".\\pictures\\SettingBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
+	ShowBmp(".\\pictures\\SettingBackground.bmp", 0, 0, winwidth + 2, winheight, SRCCOPY);
 	DrawButtons2();
 }
 
@@ -96,12 +96,12 @@ static void DrawButtons1()
 	double y = winheight / 2 - h;
 	double w = winwidth / 5;
 
-	if (button(GenUIID(0), x + 3.5 * w, y - 2 * h, w, h, "Strating"))
+	if (button(GenUIID(0), x + 3.5 * w, y + 2 * h, w, h, "Strating"))
 		show_more_buttons = 1;
-	if (button(GenUIID(0), x + 3.5 * w, y - 4 * h, w, h, "Setting")) {
+	if (button(GenUIID(0), x + 3.5 * w, y + 4 * h, w, h, "Setting")) {
 		show_more_buttons = 2;
 	}
-	if (button(GenUIID(0), x + 3.5 * w, y - 6 * h, w, h, "Helping"))
+	if (button(GenUIID(0), x + 3.5 * w, y + 6 * h, w, h, "Helping"))
 		show_more_buttons = 3;
 }
 
@@ -189,13 +189,13 @@ bool HomePage()
 	SetWindowSize(7, 5);
 	InitGraphics();
 
-	winwidth = GetWindowWidth() - 2;
+	winwidth = GetWindowWidth()-2;
 	winheight = GetWindowHeight();
 
 	registerMouseEvent(MouseEventProcess);
 
 	StartBatchDraw();
-	ShowBmp(".\\pictures\\HomePageBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
+	ShowBmp(".\\pictures\\HomePageBackground_5x7.bmp", 0, 0, winwidth + 2, winheight, SRCCOPY);
 	EndBatchDraw();
 	
 	DrawButtons1();	
