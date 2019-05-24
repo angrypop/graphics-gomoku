@@ -84,7 +84,7 @@ static void InitGamePage()
 	else
 		Info.side = "白棋： 你   黑棋： AI ";
 	Info.turn = "当前回合数： 0 ";
-	Info.argument = "当前参数： 0.5 ";
+	
 	if (Setting.FirstMove == FM_BLACK)
 		Info.now = "当前走棋： 黑棋";
 	else
@@ -216,11 +216,8 @@ static void DrawInfoBoard()
 	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
 		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3.0 / 5.0 - MENU_HEIGHT,
 		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
-		0, Info.argument, 'M', "Black");
-	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
-		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 4.0 / 5.0 - MENU_HEIGHT,
-		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
 		0, Info.now, 'M', "Black");
+	
 }
 static void DrawButtons()
 {
@@ -485,8 +482,7 @@ static void UpdateInfo()
 		Info.side = "白棋： 你   黑棋： AI ";
 	//Update Turns
 	Info.turn = Concat("当前回合数：  ", IntegerToString(LLTail->Board.Turn));
-	//Update argument
-	//Info.argument = Concat("当前参数：  ", IntegerToString());
+
 	//Update current turn
 	if (UserTurn)
 	{

@@ -45,7 +45,6 @@ struct Information
 {
 	string turn;
 	string side;
-	string argument;
 	string now;
 };
 
