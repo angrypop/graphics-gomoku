@@ -5,11 +5,14 @@
 #ifndef END_GAME_PAGE_C
 #define END_GAME_PAGE_C
 #include "EndGamePage.h"
+#include "extrafunc.h"
 
 // global variable
 static int GameStatus;
 static double winwidth, winheight;
 static int    show_more_buttons = 0;
+
+static void MouseEventProcess(int x, int y, int button, int event);
 
 static void MouseEventProcess(int x, int y, int button, int event);
 static void display(void);
@@ -29,16 +32,14 @@ static void display(void);
     winheight = GetWindowHeight();
     
     GameStatus=gameStatus;
-    ShowBmp(".\\pictures\\EndGameBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
 
 	// register mouse event function
-    registerMouseEvent(MouseEventProcess);      // mouse
+	registerMouseEvent(MouseEventProcess);      // mouse
 
 	// open the console for easy output of variable information and debug
 	// InitConsole(); 
 
 }
-
 
 //Buttons demonstration program
   static void drawButtons()
@@ -52,29 +53,32 @@ static void display(void);
 	MovePen(winwidth/3,winheight/3*2);
 	switch (GameStatus){
 	 case GAME_WIN:
-         DrawTextString("you are  WINNING!");
+		 ShowBmp(".\\pictures\\YouWin.bmp",
+			 0, 0, GetWindowWidth(), GetWindowHeight(), SRCCOPY);
          break;
 	 case GAME_LOSE:
-	     DrawTextString("you are  LOSING!");
+		 ShowBmp(".\\pictures\\YouLose.bmp",
+			 0, 0, GetWindowWidth(), GetWindowHeight(), SRCCOPY);
 	     break;
 	 case GAME_SURRENDER: 
-	     DrawTextString("you are  SURRENDER!"); 
+		 ShowBmp(".\\pictures\\Surrender.bmp",
+			 0, 0, GetWindowWidth(), GetWindowHeight(), SRCCOPY);
 	     break;
 	 }
-    
-	if (button(GenUIID(0), x, y, w, h,  "复盘")){
+	
+	if (button(GenUIID(0), x, y, w, h, "New Game")) {
+		show_more_buttons = !show_more_buttons;
+		cancelMouseEvent();
+		GamePage(GAME_PAGE_PLAY);
+	}
+	if (button(GenUIID(1), x, y - 1.5 * h, w, h,  "Review")){
 		show_more_buttons = !show_more_buttons;
 		cancelMouseEvent();
 		GamePage(GAME_PAGE_REPLAY);
-		
-		//HomePage();
 	}
-		
-
-	//if( button(GenUIID(0), x, y-2*h, w, h, "退出")){
-	//	exit(-1);
-	//}
-	
+	if (button(GenUIID(2), x, y - 3 * h, w, h, "Exit")) {
+		exit(-1);
+	}
 }
 
 // mouse event function
@@ -88,7 +92,6 @@ static  void MouseEventProcess(int x, int y, int button, int event)
 {
 	// clearscreen
 	DisplayClear();
-			
 	// button
 	drawButtons();
 }
