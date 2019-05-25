@@ -1659,7 +1659,7 @@ static void DisplayPolygon(void)
         fillPen = drawPen;
     }
     oldPen = (HPEN) SelectObject(osdc, fillPen);
-
+    brush = CreatePatternBrush(fillBitmaps[px]);
 
     if (brush == NULL) {
         Error("Internal error: Can't load brush");
