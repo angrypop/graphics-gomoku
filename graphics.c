@@ -344,7 +344,8 @@ void DrawLine(double dx, double dy)
         regionState = RegionActive;
         break;
       case PenHasMoved:
-        Error("Region segments must be contiguous");
+		  break;
+        //Error("Region segments must be contiguous");
     }
     cx += dx;
     cy += dy;
@@ -955,6 +956,7 @@ static void InitDrawingTools(void)
     }
     for (i = 0; i < NFills; i++) {
         fillBitmaps[i] = CreateBitmap(8, 8, 1, 1, fillList[i]);
+
     }
     SelectObject(osdc, drawPen);
 }
@@ -1657,7 +1659,8 @@ static void DisplayPolygon(void)
         fillPen = drawPen;
     }
     oldPen = (HPEN) SelectObject(osdc, fillPen);
-    brush = CreatePatternBrush(fillBitmaps[px]);
+
+
     if (brush == NULL) {
         Error("Internal error: Can't load brush");
     }
@@ -2007,7 +2010,7 @@ double ScaleYInches(int y)/*y coordinate from pixels to inches*/
 
 
 // Added Function by Steven Chen
-// Latest Date: 2019.05.04
+// Latest Date: 2019.05.25
 // Notice: Declarations are provided by the extrafunc.h
 //		   put the extrafunc.h in the Source Files
 //		   and include "extrafunc.h" before using the functions
@@ -2023,15 +2026,20 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 {
 	//the width and height here are in inches
 	//transfered to pwidth and pheight in pixels
-	//use together with StartDraw and EndDraw
+	//use together with StartBatchDraw and EndBatchDraw
 	/*
 	 * mdc           -- buffer DC 
-	 * osBits         -- Offscreen bitmap
+	 * mosBits         -- Offscreen bitmap
 	*/
 
 	int px, py, pwidth, pheight, pWindowHeight;
 	HDC mdc;
 	mdc = CreateCompatibleDC(osdc);
+	HBITMAP mosBits;
+	mosBits = CreateCompatibleBitmap(gdc, pixelWidth, pixelHeight);
+	if (mosBits == NULL) {
+		Error("Internal error: Can't create offscreen bitmap");
+	}
 	//Inches To Pixels
 	px = PixelsX(x);
 	py = PixelsX(y);
@@ -2040,7 +2048,7 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 	pWindowHeight = PixelsY(GetWindowHeight());
 
 	//Load the image
-	osBits = (HBITMAP)LoadImage(
+	mosBits = (HBITMAP)LoadImage(
 		NULL,
 		address,
 		IMAGE_BITMAP,
@@ -2050,11 +2058,12 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 		);
 
 	//buffer dc load the bitmap
-	SelectObject(mdc, osBits);
+	SelectObject(mdc, mosBits);
 	
 	//Update
 	BitBlt(osdc, px, pWindowHeight - py - pheight, pwidth, pheight, mdc, 0, 0, dwRop);
 	DeleteDC(mdc);
+	DeleteObject(mosBits);
 }
 
 //Batch Drawing :
@@ -2072,6 +2081,7 @@ void StartBatchDraw()
 //Usage: to end the batch drawing and update the screen
 void EndBatchDraw()
 {
+	//UpdateDisplay();
 	DoUpdate();
 }
 
@@ -2085,7 +2095,7 @@ bool ReadAllPixels(FILE* fp)
 		return FALSE;
 	else
 	{
-		HDC dc = CreateCompatibleDC(gdc);
+		
 		double ix, iy;// in inches
 		int px, py;// in pixels
 		int i, j;
@@ -2094,13 +2104,13 @@ bool ReadAllPixels(FILE* fp)
 		px = PixelsX(ix);
 		py = PixelsY(iy);
 
-		StretchBlt(dc, 0, 0, px, py, gdc, 0, 0, px, py, SRCCOPY);
+		
 		fprintf_s(fp, "%d %d\n\r",px, py);
 		for (i = 0; i < py; i++)
 		{
 			for (j = 0; j < px; j++)
 			{
-				fprintf(fp, "%d %d %d/ ", GetRValue(GetPixel(dc, i, j)), GetGValue(GetPixel(dc, i, j)), GetBValue(GetPixel(dc, i, j)));
+				fprintf(fp, "%d %d %d/ ", GetRValue(GetPixel(gdc, i, j)), GetGValue(GetPixel(gdc, i, j)), GetBValue(GetPixel(gdc, i, j)));
 			}
 			fprintf_s(fp, "\n\r");
 		}
