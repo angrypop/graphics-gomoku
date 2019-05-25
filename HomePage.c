@@ -164,6 +164,7 @@ static void DrawButtons3()
 		show_more_buttons = 0;
 		HomePage();
 	}
+	usePredefinedTexBoxColors(0);
 	char* text1 = { "Instructions :" };
 	char* text2 = { "(keyboard) move the pieces by pressing up and down," };
 	char* text3 = { "           and use the Enter key to move the pieces." };
