@@ -37,8 +37,22 @@
 #define GP_ID_SURRENDER 2
 #define GP_ID_QUIT 8
 
+//Macro for GamePage function
+#define GAME_PAGE_PLAY 0
+#define GAME_PAGE_REPLAY 1
+
+
+// Macro for timer
+#define PLAY_INTERVAL 16
+#define REPLAY_INTERVAL 1000
+#define PLAY_ID 1
+#define REPLAY_ID 2
+
 // declarations
-void GamePage(void);
+
+// Function : GamePage()
+// Usage: open the Game Page
+void GamePage(int function);
 
 //structure
 struct Information

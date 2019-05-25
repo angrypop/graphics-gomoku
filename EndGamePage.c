@@ -12,9 +12,12 @@ static double winwidth, winheight;
 static int    show_more_buttons = 0;
 
 static void MouseEventProcess(int x, int y, int button, int event);
+
+static void MouseEventProcess(int x, int y, int button, int event);
+static void display(void);
 // User main program entry
 // Initialize once
- bool EndGamePage (int gameStatus) 
+ void EndGamePage (int gameStatus) 
 {
 	// Initialization window and graphics system
 	//SetWindowSize(10, 10); // unit - inch
@@ -39,7 +42,7 @@ static void MouseEventProcess(int x, int y, int button, int event);
 
 
 //Buttons demonstration program
- void drawButtons()
+  static void drawButtons()
 {
 	double fH = GetFontHeight();
 	double h = fH*2;  // conrtol height
@@ -56,13 +59,16 @@ static void MouseEventProcess(int x, int y, int button, int event);
 	     DrawTextString("you are  LOSING!");
 	     break;
 	 case GAME_SURRENDER: 
-	     DrawTextString("you are  SUREENDER!"); 
+	     DrawTextString("you are  SURRENDER!"); 
 	     break;
 	 }
     
 	if (button(GenUIID(0), x, y, w, h,  "复盘")){
-		show_more_buttons = ! show_more_buttons;
-		HomePage();
+		show_more_buttons = !show_more_buttons;
+		cancelMouseEvent();
+		GamePage(GAME_PAGE_REPLAY);
+		
+		//HomePage();
 	}
 		
 
@@ -79,7 +85,7 @@ static  void MouseEventProcess(int x, int y, int button, int event)
 	display(); // refresh diaplay
 }
 
- void display()
+ static void display()
 {
 	// clearscreen
 	DisplayClear();

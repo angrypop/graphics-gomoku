@@ -58,18 +58,28 @@ static void CheckAI();
 static void CopyBoard(Board* DesB, Board* OriB);
 static void Restart();
 
-void GamePage()
+void GamePage(int function)
 {
-	// Initialize the GamePage data
-	InitGamePage();
-	
-	// register the callback function of Game Page
-	// start the timer for drawing
-	startTimer(DRAW_ID, DRAW_INTERVAL);
-	registerTimerEvent(TimerEventProcess);
-	registerKeyboardEvent(KeyboardEventProcess);
-	registerMouseEvent(MouseEventProcess);
+	if (function == GAME_PAGE_PLAY)
+	{
+		// Initialize the GamePage data
+		InitGamePage();
 
+		// register the callback function of Game Page
+		// start the timer for drawing
+		startTimer(PLAY_ID, PLAY_INTERVAL);
+		registerTimerEvent(TimerEventProcess);
+		registerKeyboardEvent(KeyboardEventProcess);
+		registerMouseEvent(MouseEventProcess);
+
+	}
+	else if (function == GAME_PAGE_REPLAY)
+	{
+		LLTail = LLHead;
+		startTimer(REPLAY_ID, REPLAY_INTERVAL);
+		registerTimerEvent(TimerEventProcess);
+	}
+	
 }
 
 // Function: InitGamePage()
@@ -120,12 +130,27 @@ static void TimerEventProcess(int timerID)
 	
 	switch (timerID)
 	{
-	case DRAW_ID:
+	case PLAY_ID:
 		
 		UpdateInfo();
 		Draw();
 		CheckResult();
 		break;
+	case REPLAY_ID:
+		if (LLTail->Next != NULL)
+		{
+			UpdateInfo();
+			Draw();
+			CheckResult();
+			LLTail = LLTail->Next;
+		}
+		else
+		{
+			// in case the CheckResult fail
+			cancelTimer(REPLAY_ID);
+			cancelTimerEvent();
+			exit(-1);
+		}
 	default:
 		break;
 	}

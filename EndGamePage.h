@@ -22,15 +22,14 @@
 
 #include "imgui.h"
 #include "Main.h"
-
+#include "GamePage.h"
 
 
 
 
 //function
-void DisplayClear(void); 
-void MouseEventProcess(int x, int y, int button, int event);
-void display(void); 
+void DisplayClear(void);
+void EndGamePage(int gameStatus);
 
 
 #endif 
