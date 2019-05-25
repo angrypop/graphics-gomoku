@@ -61,7 +61,7 @@ static void MouseEventProcess(int x, int y, int button, int event)
 	case 1:
 		cancelMouseEvent(MouseEventProcess);
 		show_more_buttons = 0;
-		GamePage();
+		GamePage(GAME_PAGE_PLAY);
 		return;
 		break;
 	case 2:display2(); break;
