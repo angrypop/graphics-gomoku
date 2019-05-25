@@ -221,6 +221,10 @@ static COLORREF drawColor, eraseColor;
 static PAINTSTRUCT ps;
 static string windowTitle = "Graphics Window";
 
+// added bitmap and dc
+HDC mdc;
+HBITMAP mosBits;
+
 static double xResolution, yResolution;
 static double windowWidth = DesiredWidth;
 static double windowHeight = DesiredHeight;
@@ -915,6 +919,11 @@ static void InitDisplay(void)
     (void) SelectObject(osdc, osBits);
     
     top = TopMargin + WindowSep + PixelsY(windowHeight) + dy;
+
+	// added bitmap and dc
+	mosBits = CreateCompatibleBitmap(gdc, pixelWidth, pixelHeight);
+	mdc = CreateCompatibleDC(osdc);
+
     /*
     SetRectFromSize(&consoleRect, LeftMargin, top,
                     cWidth + dx, ConsoleHeight);
@@ -959,6 +968,7 @@ static void InitDrawingTools(void)
 
     }
     SelectObject(osdc, drawPen);
+
 }
 
 /*
@@ -2033,12 +2043,9 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 	*/
 
 	int px, py, pwidth, pheight, pWindowHeight;
-	HDC mdc;
-	mdc = CreateCompatibleDC(osdc);
-	HBITMAP mosBits;
-	mosBits = CreateCompatibleBitmap(gdc, pixelWidth, pixelHeight);
+
 	if (mosBits == NULL) {
-		Error("Internal error: Can't create offscreen bitmap");
+		Error("Internal error: Can't create offscreen bitmap added");
 	}
 	//Inches To Pixels
 	px = PixelsX(x);
@@ -2046,7 +2053,7 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 	pwidth = PixelsX(width);
 	pheight = PixelsX(height);
 	pWindowHeight = PixelsY(GetWindowHeight());
-
+	
 	//Load the image
 	mosBits = (HBITMAP)LoadImage(
 		NULL,
@@ -2056,13 +2063,12 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 		pheight,
 		LR_LOADFROMFILE
 		);
-
+	
 	//buffer dc load the bitmap
 	SelectObject(mdc, mosBits);
 	
 	//Update
 	BitBlt(osdc, px, pWindowHeight - py - pheight, pwidth, pheight, mdc, 0, 0, dwRop);
-	DeleteDC(mdc);
 	DeleteObject(mosBits);
 }
 
