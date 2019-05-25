@@ -32,89 +32,144 @@ extern Board B;
 extern LinkedListNode* LLHead;
 extern struct setting Setting;
 
-
+// Local variables
 static double winwidth, winheight; 
-static int    show_more_buttons = 0; 
+static int    show_strating = 0;
+static int    show_setting = 0;
+static int    show_helping = 0;
 static int    show_model = 0;
 static int    show_forerunner = 0;
 static int    show_color = 0; 
 static int    show_level = 0;
 
+// Function: DisplayClear
+// Usage:clean screen
 void DisplayClear(void);
 
-static void display1(void);
-static void display2(void);
-static void display3(void);
+// Local Functions
+static void displayhomepage(void);
+static void displaysetting(void);
+static void displayhelping(void);
 static void MouseEventProcess(int x, int y, int button, int event);
-static void DrawButtons1(void);
-static void DrawButtons2(void);
-static void DrawButtons3(void);
+static void DrawButtonsHomepage(void);
+static void DrawButtonsSetting(void);
+static void WriteTextHelping(void);
 
+bool HomePage()
+{
+	// set the button style of homepage
+	usePredefinedButtonColors(0);
+	// Initialize chessboard
+	InitBoard(&B);
+	LLHead = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+	// Initialize linked list
+	LLHead->Next = NULL;
+	LLHead->Pre = NULL;
+	LLHead->Board = B;
 
+	// get window size
+	SetWindowSize(7, 5);
+	InitGraphics();
 
+	winwidth = GetWindowWidth() - 2;
+	winheight = GetWindowHeight();
+
+	// register mouse event function
+	registerMouseEvent(MouseEventProcess);
+
+	StartBatchDraw();
+	ShowBmp(".\\pictures\\HomePageBackground_5x7.bmp", 0, 0, winwidth + 2, winheight, SRCCOPY);
+	EndBatchDraw();
+
+	DrawButtonsHomepage();
+
+	// open the console for easy output of variable information and debug
+	// InitConsole(); 
+}
+
+// Function: MouseEventProcess
+// Usage:determine the next event activity to be performed by clicking the mouse button 
 static void MouseEventProcess(int x, int y, int button, int event)
 {
 	uiGetMouse(x, y, button, event);
-	switch (show_more_buttons)
-	{
-	case 0:display1(); break;
-	case 1:
+
+	//Check which button was pressed
+	if (show_strating == 1) {
 		cancelMouseEvent(MouseEventProcess);
-		show_more_buttons = 0;
+		show_strating = 0;
+		show_setting = 0;
+		show_helping = 0;
 		GamePage(GAME_PAGE_PLAY);
 		return;
-		break;
-	case 2:display2(); break;
-	case 3:display3(); break;
 	}
+	if (show_setting == 1) {
+		displaysetting();
+		return;
+	}
+	if (show_helping == 1) {
+		displayhelping();
+		return;
+	}
+	//No button is pressed to display the initial interfac
+	displayhomepage();
 }
 
-static void display1()
+// Function: displayhomepage
+// Usage:display homepage
+static void displayhomepage()
 {
 	DisplayClear();
 	ShowBmp(".\\pictures\\HomePageBackground_5x7.bmp", 0, 0, winwidth + 2, winheight, SRCCOPY);
-	DrawButtons1();
+	DrawButtonsHomepage();
 }
 
-static void display2()
+// Function: displaysetting
+// Usage:display setting
+static void displaysetting()
 {
 	DisplayClear();
 	ShowBmp(".\\pictures\\SettingBackground.bmp", 0, 0, winwidth + 2, winheight, SRCCOPY);
-	DrawButtons2();
+	DrawButtonsSetting();
 }
 
-static void display3()
+// Function: displayhelping
+// Usage:display helping
+static void displayhelping()
 {
 	DisplayClear();
-	DrawButtons3();
+	WriteTextHelping();
 }
 
-static void DrawButtons1()
+// Function: DrawButtonsHomepage
+// Usage:draw the buttons on the home screen and define their functions
+static void DrawButtonsHomepage()
 {
 	double fH = GetFontHeight();
-	double h = fH * 2;
+	double h = fH * 2;// conrtol height
 	double x = winwidth / 2.5;
 	double y = winheight / 2 - h;
-	double w = winwidth / 5;
+	double w = winwidth / 5;// conrtol width
 
 	if (button(GenUIID(0), x + 3.5 * w, y + 7 * h, w, h, "Strating"))
-		show_more_buttons = 1;
+		show_strating = 1;
 	if (button(GenUIID(0), x + 3.5 * w, y + 5 * h, w, h, "Setting")) {
-		show_more_buttons = 2;
+		show_setting = 1;
 	}
 	if (button(GenUIID(0), x + 3.5 * w, y + 3 * h, w, h, "Helping"))
-		show_more_buttons = 3;
+		show_helping = 1;
 	if (button(GenUIID(0), x + 3.5 * w, y + 1 * h, w, h, "Exit"))
 		exit(-1);
 }
 
-static void DrawButtons2()
+// Function: DrawButtonsSetting
+// Usage:draw the buttons on the setting screen and define their functions
+static void DrawButtonsSetting()
 {
 	double fH = GetFontHeight();
-	double h = fH * 2;
+	double h = fH * 2;// conrtol height
 	double x = winwidth / 2.5;
 	double y = winheight / 2 - h;
-	double w = winwidth / 5;
+	double w = winwidth / 5;// conrtol width
 
 	if (button(GenUIID(0), x + w * 1.2, y + 5 * h, w, h, show_level ? "Easy" : "Difficult")) {
 		show_level = !show_level;
@@ -141,29 +196,38 @@ static void DrawButtons2()
 		show_color = !show_color;
 		
 	}
+
 	button(GenUIID(0), x - w * 1.2, y + 5 * h, w, h, "Level");
 	button(GenUIID(0), x - w * 1.2, y + 3 * h, w, h, "Model");
 	button(GenUIID(0), x - w * 1.2, y + 1 * h, w, h, "Forerunner");
 	button(GenUIID(0), x - w * 1.2, y - 1 * h, w, h, "Color");
+
 	if (button(GenUIID(0), x + w * 1.6, y - 3 * h, w, h, "Back")) {
-		show_more_buttons = 0;
+		show_strating = 0;
+		show_setting = 0;
+		show_helping = 0;
 		HomePage();
 	}
 
 }
 
-static void DrawButtons3()
+// Function: DrawButtonsHelping
+// Usage:write the texts on the helping screen 
+static void WriteTextHelping()
 {
 	double fH = GetFontHeight();
-	double h = fH * 2;
+	double h = fH * 2;// conrtol height
 	double x = winwidth / 2.5;
 	double y = winheight / 2 - h;
-	double w = winwidth / 5;
+	double w = winwidth / 5;// conrtol width
 
 	if (button(GenUIID(0), x + w * 1.6, y - 6 * h, w, h, "Back")) {
-		show_more_buttons = 0;
+		show_strating = 0;
+		show_setting = 0;
+		show_helping = 0;
 		HomePage();
 	}
+
 	usePredefinedTexBoxColors(0);
 	char* text1 = { "Instructions :" };
 	char* text2 = { "(keyboard) move the pieces by pressing up and down," };
@@ -180,30 +244,4 @@ static void DrawButtons3()
 	textbox(GenUIID(0), 0, 4.5 - 5 * h, 5, h, text6, sizeof(text6));
 }
 
-bool HomePage()
-{
-	// set the button style of homepage
-	usePredefinedButtonColors(0);
-	// Initialize chessboard
-	InitBoard(&B);
-	LLHead = (LinkedListNode*)malloc(sizeof(LinkedListNode));
-	// Initialize linked list
-	LLHead->Next = NULL;
-	LLHead->Pre = NULL;
-	LLHead->Board = B;
-
-	SetWindowSize(7, 5);
-	InitGraphics();
-
-	winwidth = GetWindowWidth()-2;
-	winheight = GetWindowHeight();
-
-	registerMouseEvent(MouseEventProcess);
-
-	StartBatchDraw();
-	ShowBmp(".\\pictures\\HomePageBackground_5x7.bmp", 0, 0, winwidth + 2, winheight, SRCCOPY);
-	EndBatchDraw();
-	
-	DrawButtons1();	
-}
 
