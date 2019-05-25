@@ -56,13 +56,15 @@ static void CheckResult();
 static void AbsDelay(int interval);
 static void CheckAI();
 static void CopyBoard(Board* DesB, Board* OriB);
+static void Restart();
 
 void GamePage()
 {
+	// Initialize the GamePage data
 	InitGamePage();
+	
 	// register the callback function of Game Page
 	// start the timer for drawing
-	
 	startTimer(DRAW_ID, DRAW_INTERVAL);
 	registerTimerEvent(TimerEventProcess);
 	registerKeyboardEvent(KeyboardEventProcess);
@@ -70,14 +72,15 @@ void GamePage()
 
 }
 
-
+// Function: InitGamePage()
+// Usage: initialize the data in Game Page
 static void InitGamePage()
 {
 	// Initialize a new Windows
 	// if the last function doesn't close the window
 	// close previous window here
 	InitAI();
-
+	
 	// initialize the information 
 	if (Setting.UserColor == UC_BLACK)
 		Info.side = "白棋： AI   黑棋： 你  ";
@@ -109,13 +112,16 @@ static void InitGamePage()
 	
 	Draw();
 }
+
+// Function: TimerEventProcess
+// Usage: Draw, update the information and check the result 
 static void TimerEventProcess(int timerID)
 {
 	
 	switch (timerID)
 	{
 	case DRAW_ID:
-	
+		
 		UpdateInfo();
 		Draw();
 		CheckResult();
@@ -127,6 +133,8 @@ static void TimerEventProcess(int timerID)
 	CheckAI();
 }
 
+// Function: Draw()
+// Usage: Draw the current chessboard, information board, buttons and menu
 static void Draw()
 {
 	StartBatchDraw();
@@ -137,8 +145,11 @@ static void Draw()
 	DrawMenu();
 
 	EndBatchDraw();
+	
 }
 
+// Function: DrawChessBoard
+// Usage: Draw the chessboard with chessmen and the instruction
 static void DrawChessboard()
 {
 	ShowBmp(".\\pictures\\Chessboard15.bmp",
@@ -157,6 +168,7 @@ static void DrawChessboard()
 	}
 
 	// Draw the instruction
+	
 	if (LLTail->Board.BoardStatus[Cur.x][Cur.y] == 'N')
 	{
 		SetPenColor("Red");
@@ -165,6 +177,11 @@ static void DrawChessboard()
 		DrawArc(CHESSMAN_SIZE / 2.0, 0, 360);
 	}
 }
+// Function: DrawWhite
+// Parameters: 
+// i: the x coordinate of the chessman
+// j: the y coordinate of the chessman
+// Usage: Draw a white chessman
 static void DrawWhite(int i, int j)
 {
 	double ix, iy;
@@ -181,6 +198,11 @@ static void DrawWhite(int i, int j)
 		ix, iy, CHESSMAN_SIZE, CHESSMAN_SIZE, SRCINVERT);
 
 }
+// Function: DrawBlack
+// Parameters: 
+// i: the x coordinate of the chessman
+// j: the y coordinate of the chessman
+// Usage: draw a black chessman
 static void DrawBlack(int i, int j)
 {
 	double ix, iy;
@@ -196,6 +218,9 @@ static void DrawBlack(int i, int j)
 	ShowBmp(".\\pictures\\BlackChessman.bmp",
 		ix, iy, CHESSMAN_SIZE, CHESSMAN_SIZE, SRCINVERT);
 }
+
+// Function: DrawInfoBoard
+// Usage: Draw the information board
 static void DrawInfoBoard()
 {
 	// Draw the rectangle
@@ -219,6 +244,8 @@ static void DrawInfoBoard()
 		0, Info.now, 'M', "Black");
 	
 }
+// Function: DrawButtons
+// Usage: Draw the buttons and process the event of the button
 static void DrawButtons()
 {
 	// Draw the rectangle
@@ -241,15 +268,17 @@ static void DrawButtons()
 		Surrender = TRUE;
 
 }
+// Function: DrawMenu
+// Usage: Draw the menu and process the event of the button
 static void DrawMenu()
 {
-	// from Prof. Liu's demo
+	// refer to Prof. Liu's demo
 	usePredefinedMenuColors(2);
 	static char * menuListMenu[] = { "               Menu",
 		"保存截图(文本) | Ctrl-P", // shortcuts have to use the form of [Ctrl-X] placed at the end of the string
-		"设置   |   Ctrl-S",
+		"返回主页面   |   Ctrl-B",
 		"帮助   |   Ctrl-H",
-		"返回主菜单 | Ctrl-M",
+		"重新开始 | Ctrl-R",
 		"退出游戏   | Ctrl-E" };
 	static char * selectedLabel = NULL;
 
@@ -259,9 +288,9 @@ static void DrawMenu()
 	double x = GetWindowWidth() - w;
 	double y = GetWindowHeight();
 	double wlist = TextStringWidth(menuListMenu[0]) * 2;
-	double xindent = GetWindowWidth() / 20; // 缩进
+	double xindent = GetWindowWidth() / 20; 
 	int    selection;
-	// File 菜单
+	
 	selection = menuList(GenUIID(0), x, y - h, w, wlist, h, menuListMenu, sizeof(menuListMenu) / sizeof(menuListMenu[0]));
 	if (selection > 0) selectedLabel = menuListMenu[selection];
 	// choose to exit
@@ -282,43 +311,55 @@ static void DrawMenu()
 			ReadAllPixels(fp);
 		}
 	}
-	// Setting
+	// Go Back to Home Page
 	else if (selection == 2)
 	{
 		// cancel the callback function in Game Page
 		cancelTimerEvent();
 		cancelKeyboardEvent();
 		cancelMouseEvent();
-		InitConsole();
-		printf("Go to Setting");
-		// the parameter lets the SettingPage function know which page to return to
-		// SettingPage(GAME_PAGE_SETTING);
+		Restart();
+		HomePage();
 	}
 	// Help
 	else if (selection == 3)
 	{
-		// cancel the callback function in Game Page
+		// draw the help
+		usePredefinedTexBoxColors(2);
+		StartBatchDraw();
+		char* text1 = { "Instructions :" };
+		char* text2 = { "(keyboard) move the pieces by pressing up and down," };
+		char* text3 = { "           and use the Enter key to move the pieces." };
+		char* text4 = { "(mouse) move the mouse to determine the position of the chess pieces," };
+		char* text5 = { "         using the left key to drop." };
+		char* text6 = { "Copyright 2019 zhejiang university. All rights reserved." };
+
+		textbox(GenUIID(0), 0, 4.5, 5, h, text1, sizeof(text1));
+		textbox(GenUIID(0), 0, 4.5 - h, 5, h, text2, sizeof(text2));
+		textbox(GenUIID(0), 0, 4.5 - 2 * h, 5, h, text3, sizeof(text3));
+		textbox(GenUIID(0), 0, 4.5 - 3 * h, 5, h, text4, sizeof(text4));
+		textbox(GenUIID(0), 0, 4.5 - 4 * h, 5, h, text5, sizeof(text5));
+		textbox(GenUIID(0), 0, 4.5 - 5 * h, 5, h, text6, sizeof(text6));
+		EndBatchDraw();
+		// pause a while
 		cancelTimerEvent();
 		cancelKeyboardEvent();
 		cancelMouseEvent();
-		InitConsole();
-		printf("Go to Help");
-		// the parameter lets the HelpPage function know which page to return to
-		// HelpPage(GAME_PAGE_SETTING);
+		Sleep(3000);
+		registerTimerEvent(TimerEventProcess);
+		registerKeyboardEvent(KeyboardEventProcess);
+		registerMouseEvent(MouseEventProcess);
 	}
-	// return to Home Page
+	// Restart
 	else if (selection == 4)
 	{
-		// cancel the callback function in Game Page
-		cancelTimerEvent();
-		cancelKeyboardEvent();
-		cancelMouseEvent();
-		InitConsole();
-		printf("Go to HomePage");
-		// Go to Home Page
-		//HomePage();
+		Restart();
 	}
 }
+// Function: MouseEventProcess
+// Usage: process the undo and surrender tiding and determine whether the mouse is outside the chessboard
+//		  and change the current coordinate of the user if the operation setting is to use mouse
+//		  and set piece if the operation setting is to use mouse
 static void MouseEventProcess(int x, int y, int mbutton, int event)
 {
 	
@@ -331,7 +372,7 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 	else
 		OutsideBoard = FALSE;
 
-	//*********************** to add menu button
+	
 
 	if (Undo)
 	{
@@ -404,7 +445,7 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 
 						// Update the screen in time
 						UpdateInfo();
-						Draw();
+						
 					}
 				}
 			}
@@ -414,6 +455,8 @@ static void MouseEventProcess(int x, int y, int mbutton, int event)
 		}
 	}
 }
+// Function: KeyboardEventProcess
+// Usage: operate the current coordinate and set piece if the operation setting is to use keyboard
 static void KeyboardEventProcess(int key, int event)
 {
 	 uiGetKeyboard(key, event);
@@ -446,7 +489,7 @@ static void KeyboardEventProcess(int key, int event)
 
 						// Update the screen in time
 						UpdateInfo();
-						Draw();
+						
 					}
 				}
 				break;
@@ -473,8 +516,11 @@ static void KeyboardEventProcess(int key, int event)
 	}
 
 }
+// Function: UpdateInfo
+// Usage: update the infomation based on the infomation of the current chessboard
 static void UpdateInfo()
 {
+
 	// Update UserColor
 	if (Setting.UserColor == UC_BLACK)
 		Info.side = "白棋： AI   黑棋： 你  ";
@@ -482,7 +528,7 @@ static void UpdateInfo()
 		Info.side = "白棋： 你   黑棋： AI ";
 	//Update Turns
 	Info.turn = Concat("当前回合数：  ", IntegerToString(LLTail->Board.Turn));
-
+	
 	//Update current turn
 	if (UserTurn)
 	{
@@ -511,9 +557,13 @@ static void UpdateInfo()
 
 	
 }
+// Function: CheckResult
+// Usage: Check whether any side win the game now
+//		  and call the EndGamePage with according parameter if yes
 static void CheckResult()
 {
 	char result = CheckWin(LLTail->Board);
+	
 	switch (result)
 	{
 	case 'W':
@@ -547,6 +597,7 @@ static void CheckResult()
 			cancelTimerEvent();
 			cancelKeyboardEvent();
 			cancelMouseEvent();
+			
 			// Go to End Game Page with the infomation of winning
 			EndGamePage(GAME_WIN);
 			break;
@@ -555,6 +606,7 @@ static void CheckResult()
 			cancelTimerEvent();
 			cancelKeyboardEvent();
 			cancelMouseEvent();
+			
 			// Go to End Game Page with the infomation of lost
 			EndGamePage(GAME_LOSE);
 			break;
@@ -562,8 +614,11 @@ static void CheckResult()
 		default:
 			break;
 		}
+		break;
 	}
 }
+// Function: AbsDelay
+// Usage: delay the current process for a particular interval
 static void AbsDelay(int interval)
 {
 	static int flag = 0;
@@ -582,6 +637,8 @@ static void AbsDelay(int interval)
 	}
 	PreTime = CurTime;
 }
+// Function: CheckAI()
+// Usage: if it is AI's turn, AI will set piece
 static void CheckAI()
 {
 	if (LLTail == NULL)
@@ -589,10 +646,7 @@ static void CheckAI()
 	// AI set piece
 	if (!UserTurn)
 	{
-		// draw notice -- not to press 
-		MovePen(GAME_PAGE_WIDTH / 4.0, GAME_PAGE_HEIGHT / 2.0);
-		DrawTextString("PLEASE WAIT FOR AI");
-		Draw();
+		
 		
 		// get the best move
 		Position BestMove = GetBestMove(LLTail->Board, (Setting.UserColor == UC_BLACK) ? 'W' : 'B');
@@ -609,6 +663,11 @@ static void CheckAI()
 	}
 
 }
+// Function: CopyBoard
+// Parameters:
+// DesB: the destination board
+// OriB: the original board(source)
+// Usage: copy the original board to the destination board
 static void CopyBoard(Board* DesB, Board* OriB)
 {
 	// copy the original board to the destination board
@@ -629,4 +688,23 @@ static void CopyBoard(Board* DesB, Board* OriB)
 	DesB->Xmin = OriB->Xmin;
 	DesB->Ymax = OriB->Ymax;
 	DesB->Ymin = OriB->Ymin;
+}
+// Function: Restart
+// Usage: restart the game to the very beginning
+static void Restart()
+{
+	while (LLHead->Next != NULL)
+	{
+		DeleteNode(LLHead);
+	}
+	free(LLHead);
+	LLHead = NULL;
+	// Initialize chessboard
+	InitBoard(&B);
+	LLHead = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+	// Initialize linked list
+	LLHead->Next = NULL;
+	LLHead->Pre = NULL;
+	LLHead->Board = B;
+	LLTail = LLHead;
 }

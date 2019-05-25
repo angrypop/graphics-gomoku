@@ -43,6 +43,7 @@
 
 // declaration for timer
 void startTimer(int id, int timeinterval);
+void cancelTimer(int id);
 
 // structure
 struct setting

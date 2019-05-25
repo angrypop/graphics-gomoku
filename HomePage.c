@@ -60,6 +60,7 @@ static void MouseEventProcess(int x, int y, int button, int event)
 	case 0:display1(); break;
 	case 1:
 		cancelMouseEvent(MouseEventProcess);
+		show_more_buttons = 0;
 		GamePage();
 		return;
 		break;
@@ -180,6 +181,8 @@ static void DrawButtons3()
 
 bool HomePage()
 {
+	// set the button style of homepage
+	usePredefinedButtonColors(0);
 	// Initialize chessboard
 	InitBoard(&B);
 	LLHead = (LinkedListNode*)malloc(sizeof(LinkedListNode));

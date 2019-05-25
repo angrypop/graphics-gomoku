@@ -25,6 +25,7 @@ struct setting Setting = { OP_MOUSE, FM_BLACK, UC_BLACK }; // the setting of the
 
 void Main()
 {
+	
 	// Go to the Home Page
 	HomePage();
 }
