@@ -12,8 +12,6 @@ static double winwidth, winheight;
 static int    show_more_buttons = 0;
 
 static void MouseEventProcess(int x, int y, int button, int event);
-
-static void MouseEventProcess(int x, int y, int button, int event);
 static void display(void);
 // User main program entry
 // Initialize once
@@ -31,9 +29,10 @@ static void display(void);
     winheight = GetWindowHeight();
     
     GameStatus=gameStatus;
+    ShowBmp(".\\pictures\\EndGameBackground.bmp", 0, 0, winwidth, winheight, SRCCOPY);
 
 	// register mouse event function
-	registerMouseEvent(MouseEventProcess);      // mouse
+    registerMouseEvent(MouseEventProcess);      // mouse
 
 	// open the console for easy output of variable information and debug
 	// InitConsole(); 
