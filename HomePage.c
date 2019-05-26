@@ -70,7 +70,7 @@ bool HomePage()
 	// get window size
 	SetWindowSize(7, 5);
 	InitGraphics();
-
+	SetWindowTitle("Graphics Gomoku");
 	winwidth = GetWindowWidth() - 2;
 	winheight = GetWindowHeight();
 
@@ -150,12 +150,12 @@ static void DrawButtonsHomepage()
 	double y = winheight / 2 - h;
 	double w = winwidth / 5;// conrtol width
 
-	if (button(GenUIID(0), x + 3.5 * w, y + 7 * h, w, h, "Strating"))
+	if (button(GenUIID(0), x + 3.5 * w, y + 7 * h, w, h, "Play"))
 		show_strating = 1;
 	if (button(GenUIID(0), x + 3.5 * w, y + 5 * h, w, h, "Setting")) {
 		show_setting = 1;
 	}
-	if (button(GenUIID(0), x + 3.5 * w, y + 3 * h, w, h, "Helping"))
+	if (button(GenUIID(0), x + 3.5 * w, y + 3 * h, w, h, "Help"))
 		show_helping = 1;
 	if (button(GenUIID(0), x + 3.5 * w, y + 1 * h, w, h, "Exit"))
 		exit(-1);
@@ -234,7 +234,7 @@ static void WriteTextHelping()
 	char* text3 = { "           and use the Enter key to move the pieces." };
 	char* text4 = { "(mouse) move the mouse to determine the position of the chess pieces," };
 	char* text5 = { "         using the left key to drop." };
-	char* text6 = { "Copyright 2019 zhejiang university. All rights reserved." };
+	char* text6 = { "Copyright 2019 Zhejiang University. All rights reserved." };
 
 	textbox(GenUIID(0), 0, 4.5, 5, h, text1, sizeof(text1));
 	textbox(GenUIID(0), 0, 4.5 - h, 5, h, text2, sizeof(text2));
