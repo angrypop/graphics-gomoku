@@ -175,7 +175,6 @@ static void DrawButtonsSetting()
 		if (show_level) Setting.Difficulty = 2;
 		else Setting.Difficulty = 4;
 		show_level = !show_level;
-		
 	}
 	if (button(GenUIID(0), x + w * 2, y + 3 * h, w, h, !show_model ? "Mouse" : "KeyBoard")) {
 		if (show_model)
