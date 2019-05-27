@@ -149,7 +149,7 @@ static void DrawButtonsHomepage()
 	double x = winwidth / 2.5;
 	double y = winheight / 2 - h;
 	double w = winwidth / 5;// conrtol width
-
+	usePredefinedButtonColors(4);
 	if (button(GenUIID(0), x + 3.5 * w, y + 7 * h, w, h, "Play"))
 		show_strating = 1;
 	if (button(GenUIID(0), x + 3.5 * w, y + 5 * h, w, h, "Setting")) {
@@ -170,25 +170,25 @@ static void DrawButtonsSetting()
 	double x = winwidth / 2.5;
 	double y = winheight / 2 - h;
 	double w = winwidth / 5;// conrtol width
-
-	if (button(GenUIID(0), x + w * 1.2, y + 5 * h, w, h, show_level ? "Easy" : "Difficult")) {
+	usePredefinedButtonColors(2);
+	if (button(GenUIID(0), x + w * 2, y + 5 * h, w, h, show_level ? "Easy" : "Hard")) {
 		show_level = !show_level;
 	}
-	if (button(GenUIID(0), x + w * 1.2, y + 3 * h, w, h, !show_model ? "Mouse" : "KeyBoard")) {
+	if (button(GenUIID(0), x + w * 2, y + 3 * h, w, h, !show_model ? "Mouse" : "KeyBoard")) {
 		if (show_model)
 			Setting.Operation = OP_MOUSE;
 		else
 			Setting.Operation = OP_KEYBOARD;
 		show_model = !show_model;
 	}
-	if (button(GenUIID(0), x + w * 1.2, y + 1 * h, w, h, !show_forerunner ? "You" : "Opponent")) {
+	if (button(GenUIID(0), x + w * 2, y + 1 * h, w, h, !show_forerunner ? "You" : "A.I.")) {
 		if (show_forerunner)
 			Setting.FirstMove = (Setting.UserColor == UC_BLACK) ? FM_BLACK : FM_WHITE;
 		else
 			Setting.FirstMove = (Setting.UserColor == UC_WHITE) ? FM_BLACK : FM_WHITE;
 		show_forerunner = !show_forerunner;
 	}
-	if (button(GenUIID(0), x + w * 1.2, y - 1 * h, w, h, show_color ? "White" : "Black")) {
+	if (button(GenUIID(0), x + w * 2, y - 1 * h, w, h, show_color ? "White" : "Black")) {
 		if (!show_color)
 			Setting.UserColor = UC_WHITE;
 		else
@@ -196,13 +196,14 @@ static void DrawButtonsSetting()
 		show_color = !show_color;
 		
 	}
+	usePredefinedButtonColors(4);
+	button(GenUIID(0), x - w * 0.5, y + 5 * h, 2 * w, h, "Difficulty");
+	button(GenUIID(0), x - w * 0.5, y + 3 * h, 2 * w, h, "Input Method");
+	button(GenUIID(0), x - w * 0.5, y + 1 * h, 2 * w, h, "Forerunner");
+	button(GenUIID(0), x - w * 0.5, y - 1 * h, 2 * w, h, "Your Side");
 
-	button(GenUIID(0), x - w * 1.2, y + 5 * h, w, h, "Level");
-	button(GenUIID(0), x - w * 1.2, y + 3 * h, w, h, "Model");
-	button(GenUIID(0), x - w * 1.2, y + 1 * h, w, h, "Forerunner");
-	button(GenUIID(0), x - w * 1.2, y - 1 * h, w, h, "Color");
-
-	if (button(GenUIID(0), x + w * 1.6, y - 3 * h, w, h, "Back")) {
+	usePredefinedButtonColors(2);
+	if (button(GenUIID(0), x + w * 3, y - 3 * h, w, h, "Back")) {
 		show_strating = 0;
 		show_setting = 0;
 		show_helping = 0;
