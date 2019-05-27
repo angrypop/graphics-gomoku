@@ -171,8 +171,11 @@ static void DrawButtonsSetting()
 	double y = winheight / 2 - h;
 	double w = winwidth / 5;// conrtol width
 	usePredefinedButtonColors(2);
-	if (button(GenUIID(0), x + w * 2, y + 5 * h, w, h, show_level ? "Easy" : "Hard")) {
+	if (button(GenUIID(0), x + w * 2, y + 5 * h, w, h, !show_level ? "Easy" : "Hard")) {
+		if (show_level) Setting.Difficulty = 2;
+		else Setting.Difficulty = 4;
 		show_level = !show_level;
+		
 	}
 	if (button(GenUIID(0), x + w * 2, y + 3 * h, w, h, !show_model ? "Mouse" : "KeyBoard")) {
 		if (show_model)

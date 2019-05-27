@@ -48,6 +48,7 @@ struct setting
 	int Operation;
 	int FirstMove;
 	int UserColor;
+	int Difficulty;/* 2:Easy 4:Hard */
 };
 
 #endif

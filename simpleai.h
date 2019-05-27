@@ -15,7 +15,6 @@
 #define DEFENSE 1.1
 #define HASHDIGITS 15 /* 2^48 ~= 10^15 */
 #define HSTHERESHOLD 30
-#define SEARCHDEPTH 4
 
 /* 
 	(Below denote A for friendly pieces, ? for blank positions)
@@ -34,14 +33,6 @@
 	"Si 2"	???AA		11
 			??A?A??		12
 			?A??A?		13
-*/
-
-
-void ReadWeights();
-/*
-	Read ShapeWeight[] from "weight.txt".
-	Arguments: void
-	Return: void
 */
 
 double Evaluate(Board B, char Side);

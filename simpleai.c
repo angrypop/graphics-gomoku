@@ -13,8 +13,10 @@
 #include "stdlib.h"
 #include "time.h"
 #include "windows.h"
+#include "Main.h"
 
-int EvaluationCount;
+extern struct setting Setting;
+int EvaluationCount, SEARCHDEPTH = 4;
 double ShapeWeight[DIMENSION + 1] = { 5000000,1000000,250,300,260,300,60,80,60,55,65,15,55,40 };
 unsigned long long ZobristHash[BOARDSIZE + 1][BOARDSIZE + 1][3];
 
@@ -398,6 +400,7 @@ static int	CMP(const void *A, const void *B) {
 }
 
 void InitAI() {
+	SEARCHDEPTH = Setting.Difficulty;
 	srand((unsigned)time(NULL));
 	int x, y, t;
 	for (x = 0; x <= BOARDSIZE; x++) {
