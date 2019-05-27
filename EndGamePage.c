@@ -6,8 +6,10 @@
 #define END_GAME_PAGE_C
 #include "EndGamePage.h"
 #include "extrafunc.h"
+#include "gomoku.h"
 
 // global variable
+extern LinkedListNode *LLHead;
 static int GameStatus;
 static double winwidth, winheight;
 static int    show_more_buttons = 0;
@@ -69,6 +71,9 @@ static void display(void);
 	if (button(GenUIID(0), x, y, w, h, "New Game")) {
 		show_more_buttons = !show_more_buttons;
 		cancelMouseEvent();
+		LLHead->Pre = NULL;
+		LLHead->Next = NULL;
+		InitBoard(&LLHead->Board);
 		GamePage(GAME_PAGE_PLAY);
 	}
 	if (button(GenUIID(1), x, y - 1.5 * h, w, h,  "Review")){
@@ -76,7 +81,12 @@ static void display(void);
 		cancelMouseEvent();
 		GamePage(GAME_PAGE_REPLAY);
 	}
-	if (button(GenUIID(2), x, y - 3 * h, w, h, "Exit")) {
+	if (button(GenUIID(3), x, y - 3 * h, w, h, "Main Menu")) {
+		show_more_buttons = !show_more_buttons;
+		cancelMouseEvent();
+		HomePage();
+	}
+	if (button(GenUIID(2), x, y - 4.5 * h, w, h, "Exit")) {
 		exit(-1);
 	}
 }

@@ -152,12 +152,15 @@ static void DrawButtonsHomepage()
 	usePredefinedButtonColors(4);
 	if (button(GenUIID(0), x + 3.5 * w, y + 7 * h, w, h, "Play"))
 		show_strating = 1;
-	if (button(GenUIID(0), x + 3.5 * w, y + 5 * h, w, h, "Setting")) {
-		show_setting = 1;
+	if (button(GenUIID(0), x + 3.5 * w, y + 5 * h, w, h, "Load")) {
+		LLHead->Board = LoadBoard();
+		show_strating = 1;
 	}
-	if (button(GenUIID(0), x + 3.5 * w, y + 3 * h, w, h, "Help"))
+	if (button(GenUIID(0), x + 3.5 * w, y + 3 * h, w, h, "Setting"))
+		show_setting = 1;
+	if (button(GenUIID(0), x + 3.5 * w, y + 1 * h, w, h, "Help"))
 		show_helping = 1;
-	if (button(GenUIID(0), x + 3.5 * w, y + 1 * h, w, h, "Exit"))
+	if (button(GenUIID(0), x + 3.5 * w, y - 1 * h, w, h, "Exit"))
 		exit(-1);
 }
 

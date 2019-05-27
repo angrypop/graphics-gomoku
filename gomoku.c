@@ -7,6 +7,7 @@
 #define PRAGMAONCE_GOMOKU_C
 
 #include "gomoku.h"
+#include "stdio.h"
 
 char CheckWin(Board B) {
 	int x = 1, y = 1, dx = 0, dy = 0;
@@ -83,19 +84,34 @@ void DeleteNode(LinkedListNode * Head) {
 	Pre->Next = NULL;
 }
 
-void PrintBoard(Board B) {
+void SaveBoard(Board B) {
+	freopen("Save.txt", "w", stdout);
 	int x, y;
+	printf("%d-%d-\n", B.Turn, B.HashValue);
 	for (x = 1; x <= BOARDSIZE; x++) {
-		printf("%2d |", BOARDSIZE - x + 1);
 		for (y = 1; y <= BOARDSIZE; y++) {
-			if (B.BoardStatus[BOARDSIZE - x + 1][y] == 'N') printf("+ ");
-			else printf("%c ", B.BoardStatus[BOARDSIZE - x + 1][y]);
+			printf("%c-", B.BoardStatus[x][y]);
 		}
 		printf("\n");
 	}
-	printf("   ");
-	for (x = 1; x <= BOARDSIZE; x++) printf("%2d", x);
-	printf("\n");
+	printf("%d %d %d %d", B.Xmin, B.Xmax, B.Ymin, B.Ymax);
+	freopen("con", "w", stdout);
 }
 
+Board LoadBoard() {
+	freopen("Save.txt", "r", stdin);
+	Board *B = (Board*)malloc(sizeof(Board));
+	int x, y;
+	scanf("%d-%d-", &B->Turn, &B->HashValue);
+	getchar();
+	for (x = 1; x <= BOARDSIZE; x++) {
+		for (y = 1; y <= BOARDSIZE; y++) {
+			scanf("%c-", &B->BoardStatus[x][y]);
+		}
+		getchar();
+	}
+	scanf("%d %d %d %d", &B->Xmin, &B->Xmax, &B->Ymin, &B->Ymax);
+	freopen("con", "r", stdin);
+	return *B;
+}
 #endif

@@ -93,15 +93,15 @@ static void InitGamePage()
 	
 	// initialize the information 
 	if (Setting.UserColor == UC_BLACK)
-		Info.side = "白棋： AI   黑棋： 你  ";
+		Info.side = "White: AI   Black: You  ";
 	else
-		Info.side = "白棋： 你   黑棋： AI ";
-	Info.turn = "当前回合数： 0 ";
+		Info.side = "White: You   Black: AI ";
+	Info.turn = "Turn no. 0 ";
 	
 	if (Setting.FirstMove == FM_BLACK)
-		Info.now = "当前走棋： 黑棋";
+		Info.now = "Black's turn";
 	else
-		Info.now = "当前走棋： 白棋";
+		Info.now = "White's turn";
 
 	if (Setting.UserColor == Setting.FirstMove)
 		UserTurn = TRUE;
@@ -283,13 +283,13 @@ static void DrawButtons()
 	if (button(GenUIID(GP_ID_UNDO),
 		CHESSBOARD_WIDTH + INFO_BOARD_WIDTH / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 3.5 / 5.0,
 		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
-		"悔棋"))
+		"Undo"))
 		Undo = TRUE;
 	usePredefinedButtonColors(2);
 	if (button(GenUIID(GP_ID_SURRENDER),
 		CHESSBOARD_WIDTH + INFO_BOARD_WIDTH / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) * 2.0 / 5.0,
 		INFO_BOARD_WIDTH * 3.0 / 5.0, (CHESSBOARD_HEIGHT - INFO_BOARD_HEIGHT) / 6.0,
-		"投降"))
+		"Surrender"))
 		Surrender = TRUE;
 
 }
@@ -300,11 +300,12 @@ static void DrawMenu()
 	// refer to Prof. Liu's demo
 	usePredefinedMenuColors(2);
 	static char * menuListMenu[] = { "               Menu",
-		"保存截图(文本) | Ctrl-P", // shortcuts have to use the form of [Ctrl-X] placed at the end of the string
-		"返回主页面   |   Ctrl-B",
-		"帮助   |   Ctrl-H",
-		"重新开始 | Ctrl-R",
-		"退出游戏   | Ctrl-E" };
+		"Ctrl-P  |  Screenshot", // shortcuts have to use the form of [Ctrl-X] placed at the end of the string
+		"Ctrl-S  |  Save Game",
+		"Ctrl-B  |  Main Menu",
+		"Ctrl-H  |  Help",
+		"Ctrl-R  |  Restart",
+		"Ctrl-E  |  Exit" };
 	static char * selectedLabel = NULL;
 
 	double fH = GetFontHeight();
@@ -319,7 +320,7 @@ static void DrawMenu()
 	selection = menuList(GenUIID(0), x, y - h, w, wlist, h, menuListMenu, sizeof(menuListMenu) / sizeof(menuListMenu[0]));
 	if (selection > 0) selectedLabel = menuListMenu[selection];
 	// choose to exit
-	if (selection == 5)
+	if (selection == 6)
 		exit(-1);
 	// read all pixels to .txt file
 	else if (selection == 1)
@@ -336,8 +337,13 @@ static void DrawMenu()
 			ReadAllPixels(fp);
 		}
 	}
-	// Go Back to Home Page
+	// Save Game
 	else if (selection == 2)
+	{
+		SaveBoard(LLTail->Board);
+	}
+	// Go Back to Home Page
+	else if (selection == 3)
 	{
 		// cancel the callback function in Game Page
 		cancelTimerEvent();
@@ -347,7 +353,7 @@ static void DrawMenu()
 		HomePage();
 	}
 	// Help
-	else if (selection == 3)
+	else if (selection == 4)
 	{
 		// draw the help
 		usePredefinedTexBoxColors(2);
@@ -357,7 +363,7 @@ static void DrawMenu()
 		char* text3 = { "           and use the Enter key to move the pieces." };
 		char* text4 = { "(mouse) move the mouse to determine the position of the chess pieces," };
 		char* text5 = { "         using the left key to drop." };
-		char* text6 = { "Copyright 2019 zhejiang university. All rights reserved." };
+		char* text6 = { "Copyright 2019 Zhejiang University. All rights reserved." };
 
 		textbox(GenUIID(0), 0, 4.5, 5, h, text1, sizeof(text1));
 		textbox(GenUIID(0), 0, 4.5 - h, 5, h, text2, sizeof(text2));
@@ -376,7 +382,7 @@ static void DrawMenu()
 		registerMouseEvent(MouseEventProcess);
 	}
 	// Restart
-	else if (selection == 4)
+	else if (selection == 5)
 	{
 		Restart();
 	}
@@ -548,11 +554,11 @@ static void UpdateInfo()
 
 	// Update UserColor
 	if (Setting.UserColor == UC_BLACK)
-		Info.side = "白棋： AI   黑棋： 你  ";
+		Info.side = "White: AI   Black: You";
 	else
-		Info.side = "白棋： 你   黑棋： AI ";
+		Info.side = "White: You   Black: AI ";
 	//Update Turns
-	Info.turn = Concat("当前回合数：  ", IntegerToString(LLTail->Board.Turn));
+	Info.turn = Concat("Turn no. ", IntegerToString(LLTail->Board.Turn));
 	
 	//Update current turn
 	if (UserTurn)
@@ -560,10 +566,10 @@ static void UpdateInfo()
 		switch (Setting.UserColor)
 		{
 		case UC_BLACK:
-			Info.now = "当前走棋： 黑棋";
+			Info.now = "Black's turn";
 			break;
 		case UC_WHITE:
-			Info.now = "当前走棋： 白棋";
+			Info.now = "White's turn";
 			break;
 		}
 	}
@@ -572,10 +578,10 @@ static void UpdateInfo()
 		switch (Setting.UserColor)
 		{
 		case UC_BLACK:
-			Info.now = "当前走棋： 白棋";
+			Info.now = "White's turn";
 			break;
 		case UC_WHITE:
-			Info.now = "当前走棋： 黑棋";
+			Info.now = "Black's turn";
 			break;
 		}
 	}

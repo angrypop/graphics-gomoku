@@ -14,10 +14,9 @@
 
 struct Board {
 	unsigned int Turn;
+	int HashValue;
 	char BoardStatus[BOARDSIZE + 1][BOARDSIZE + 1];
-	unsigned long long HashValue;
 	int Xmin, Xmax, Ymin, Ymax;
-	int PositionScore[BOARDSIZE + 1][BOARDSIZE + 1];
 	/*
 		BoardStatue[x][y]: 'W' = White, 'B' = Black, 'N' = Neutral
 		x and y is counted from bottom-left, ranging from 1 to 15
@@ -85,5 +84,17 @@ void DeleteNode(LinkedListNode * Head);
 	Return		: void
 */
 
-void PrintBoard(Board B);
+void SaveBoard(Board B);
+/*
+	Save a board at a .txt file.
+	Arguments	: A Board
+	Return		: void
+*/
+
+Board LoadBoard(void);
+/*
+	Load a board from a .txt file.
+	Arguments	: void
+	Return		: A Board
+*/
 #endif
