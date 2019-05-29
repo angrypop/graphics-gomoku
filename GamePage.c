@@ -33,7 +33,6 @@ extern struct setting Setting;
 // Local variables
 static struct Information Info;
 static bool UserTurn;
-static int GameStatus;
 static LinkedListNode *LLTail = NULL; // the tail of the Linked List
 static Position Cur = { 8 ,8 }; // the coordinates of the current position
 static bool Undo = FALSE; // store the status of the button UNDO
