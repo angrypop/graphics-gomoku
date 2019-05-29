@@ -299,12 +299,12 @@ static void DrawMenu()
 	// refer to Prof. Liu's demo
 	usePredefinedMenuColors(2);
 	static char * menuListMenu[] = { "               Menu",
-		"Ctrl-P  |  Screenshot", // shortcuts have to use the form of [Ctrl-X] placed at the end of the string
-		"Ctrl-S  |  Save Game",
-		"Ctrl-B  |  Main Menu",
-		"Ctrl-H  |  Help",
-		"Ctrl-R  |  Restart",
-		"Ctrl-E  |  Exit" };
+		"Screenshot   | Ctrl-P", // shortcuts have to use the form of [Ctrl-X] placed at the end of the string
+		"Save Game  | Ctrl-S",
+		"Main Menu   | Ctrl-B",
+		"Help             | Ctrl-H",
+		"Restart         | Ctrl-R",
+		"Exit              | Ctrl-E" };
 	static char * selectedLabel = NULL;
 
 	double fH = GetFontHeight();
