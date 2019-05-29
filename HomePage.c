@@ -153,7 +153,7 @@ static void DrawButtonsHomepage()
 	if (button(GenUIID(0), x + 3.5 * w, y + 7 * h, w, h, "Play"))
 		show_strating = 1;
 	if (button(GenUIID(0), x + 3.5 * w, y + 5 * h, w, h, "Load")) {
-		LLHead->Board = LoadBoard();
+		if (!access("Save.txt", 0)) LLHead->Board = LoadBoard();
 		show_strating = 1;
 	}
 	if (button(GenUIID(0), x + 3.5 * w, y + 3 * h, w, h, "Setting"))
