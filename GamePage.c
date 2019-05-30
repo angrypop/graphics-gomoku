@@ -107,6 +107,12 @@ static void InitGamePage()
 	else
 		UserTurn = FALSE;
 
+	if (Setting.Difficulty == 2)
+		Info.difficulty = "Difficulty:  Easy";
+	else if (Setting.Difficulty == 4)
+		Info.difficulty = "Difficulty:  Hard";
+	else
+		Info.difficulty = "Difficulty:  Unknown";
 
 	// initialize the gui
 	InitGUI();
@@ -266,6 +272,10 @@ static void DrawInfoBoard()
 		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 3.0 / 5.0 - MENU_HEIGHT,
 		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
 		0, Info.now, 'M', "Black");
+	drawBox(GAME_PAGE_WIDTH - INFO_BOARD_WIDTH + INFO_BOARD_WIDTH / 10.0,
+		GAME_PAGE_HEIGHT - INFO_BOARD_HEIGHT * 4.0 / 5.0 - MENU_HEIGHT,
+		INFO_BOARD_WIDTH * 4.0 / 5.0, INFO_BOARD_HEIGHT / 6.0,
+		0, Info.difficulty, 'M', "Black");
 	
 }
 // Function: DrawButtons

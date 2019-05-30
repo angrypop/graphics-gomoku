@@ -60,6 +60,7 @@ struct Information
 	string turn;
 	string side;
 	string now;
+	string difficulty;
 };
 
 #endif 
