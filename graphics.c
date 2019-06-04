@@ -17,12 +17,17 @@
 #include <time.h>
 #include <wincon.h>
 #include <Windows.h>
+#include <wingdi.h>
 
 #include "genlib.h"
 #include "gcalloc.h"
 #include "strlib.h"
 #include "extgraph.h"
 
+//#pragma comment(lib, "Msimg32.lib")
+/*if pragma can be used, then it is alternative to add the above comment
+and change the GdiAlphaBlend into AlphaBlend
+*/
 /*
  * Parameters
  * ----------
@@ -222,7 +227,7 @@ static PAINTSTRUCT ps;
 static string windowTitle = "Graphics Window";
 
 // added bitmap and dc
-HDC mdc;
+HDC mdc,bufdc;
 HBITMAP mosBits;
 
 static double xResolution, yResolution;
@@ -923,6 +928,7 @@ static void InitDisplay(void)
 	// added bitmap and dc
 	mosBits = CreateCompatibleBitmap(gdc, pixelWidth, pixelHeight);
 	mdc = CreateCompatibleDC(osdc);
+	bufdc = CreateCompatibleDC(osdc);
 
     /*
     SetRectFromSize(&consoleRect, LeftMargin, top,
@@ -2019,8 +2025,10 @@ double ScaleYInches(int y)/*y coordinate from pixels to inches*/
 } 	   
 
 
-// Added Function by Steven Chen
-// Latest Date: 2019.05.25
+// if you want to use it, it would be nice of you
+// to buy a cup of milk tea for the author and acknowledge him
+// only if you know him
+
 // Notice: Declarations are provided by the extrafunc.h
 //		   put the extrafunc.h in the Source Files
 //		   and include "extrafunc.h" before using the functions
@@ -2044,9 +2052,7 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 
 	int px, py, pwidth, pheight, pWindowHeight;
 
-	if (mosBits == NULL) {
-		Error("Internal error: Can't create offscreen bitmap added");
-	}
+	
 	//Inches To Pixels
 	px = PixelsX(x);
 	py = PixelsX(y);
@@ -2063,7 +2069,9 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 		pheight,
 		LR_LOADFROMFILE
 		);
-	
+	if (mosBits == NULL) {
+		Error("Internal error: Can't load bitmaps");
+	}
 	//buffer dc load the bitmap
 	SelectObject(mdc, mosBits);
 	
@@ -2122,4 +2130,194 @@ bool ReadAllPixels(FILE* fp)
 		}
 
 	}
+}
+// Function: TranslucentBmp
+// Parameters:
+// originaladdress: the address of the original picture
+// maskaddress: the address of the mask picture ( NULL if mask is not needed )
+// x,y : the coordinates (inches)
+// width: the width of the picture(inches)
+// height: the height of the picture(inches)
+// alpha: a real number between 0 and 1, indicating the degree of being translucent( 0 is transparent while 1 is filled )
+// Usage: 
+// To show a picture translucently in the degree of alpha,
+// and the transparent background is supported if mask picture is provided
+void TranslucentBmp(string originaladdress, string maskaddress,double x, double y, double width, double height, double alpha)
+{
+	BLENDFUNCTION bf = {AC_SRC_OVER, 0, 0xFF * alpha, 0};
+	int pwidth = PixelsX(width);
+	int pheight = PixelsY(height);
+	int px = PixelsX(x);
+	int py = PixelsY(y);
+
+	if (maskaddress == NULL)
+	{
+		HBITMAP oriBits = (HBITMAP)LoadImage(
+			NULL,
+			originaladdress,
+			IMAGE_BITMAP,
+			pwidth,
+			pheight,
+			LR_LOADFROMFILE
+		);
+		if (oriBits == NULL)
+		{
+			Error("Cannot load bitmap\n");
+		}
+		HDC oridc = CreateCompatibleDC(osdc);
+		if (oridc == NULL)
+		{
+			Error("Cannot create offscreen original DC\n");
+		}
+		if (!SelectObject(oridc, oriBits))
+			Error("Cannot select original bitmap to dc\n");
+
+		bool ab = GdiAlphaBlend(
+			osdc,
+			px, pixelHeight - pheight - py,
+			pwidth,
+			pheight,
+			oridc,
+			0, 0,
+			pwidth,
+			pheight,
+			bf
+		);
+		if (!ab)
+			Error("Cannot alphablend");
+		DeleteDC(oridc);
+		DeleteObject(oriBits);
+	}
+	else
+	{
+		bf.SourceConstantAlpha = 0xFF - bf.SourceConstantAlpha;
+		HBITMAP oriBits = (HBITMAP)LoadImage(
+			NULL,
+			originaladdress,
+			IMAGE_BITMAP,
+			pwidth,
+			pheight,
+			LR_LOADFROMFILE
+		);
+		if (oriBits == NULL)
+		{
+			Error("Cannot load bitmap\n");
+		}
+		HDC oridc = CreateCompatibleDC(osdc);
+		if (oridc == NULL)
+		{
+			Error("Cannot create offscreen original DC\n");
+		}
+		if (!SelectObject(oridc, oriBits))
+			Error("Cannot select original bitmap to dc\n");
+		GdiAlphaBlend(
+			oridc,
+			0, 0,
+			pwidth,
+			pheight,
+			osdc,
+			px, pixelHeight - pheight - py,
+			pwidth,
+			pheight,
+			bf
+		);
+
+		HBITMAP maskBits = (HBITMAP)LoadImage(
+			NULL,
+			maskaddress,
+			IMAGE_BITMAP,
+			pwidth,
+			pheight,
+			LR_LOADFROMFILE
+		);
+		if (maskBits == NULL)
+		{
+			Error("Cannot load bitmap\n");
+		}
+		HDC maskdc = CreateCompatibleDC(osdc);
+		if (maskdc == NULL)
+		{
+			Error("Cannot create offscreen mask DC\n");
+		}
+		if (!SelectObject(maskdc, maskBits))
+			Error("Cannot select mask bitmap to dc\n");
+
+		bool bboridcmdc = BitBlt(
+			osdc,
+			px, pixelHeight - pheight - py,
+			pwidth,
+			pheight,
+			oridc,
+			0, 0,
+			SRCINVERT
+		);
+		if (!bboridcmdc)
+			Error("Cannot BitBlt oridc to mdc");
+		bool bbmaskdcmdc = BitBlt(
+			osdc,
+			px, pixelHeight - pheight - py,
+			pwidth,
+			pheight,
+			maskdc,
+			0, 0,
+			SRCAND
+		);
+		if (!bbmaskdcmdc)
+			Error("Cannot BitBlt maskdc to mdc");
+		bool bboridcmdc_2 = BitBlt(
+			osdc,
+			px, pixelHeight - pheight - py,
+			pwidth,
+			pheight,
+			oridc,
+			0, 0,
+			SRCINVERT
+		);
+		if (!bboridcmdc_2)
+			Error("Cannot BitBlt oridc to mdc_2");
+
+
+		DeleteObject(oriBits);
+		DeleteDC(oridc);
+		DeleteObject(maskBits);
+		DeleteDC(maskdc);
+	}
+	
+}
+// Function: TransparentBmp
+// Parameters:
+// address: the address of the picture
+// x,y : the coordinates (inches)
+// width: the width of the picture(inches)
+// height: the height of the picture(inches)
+// crTransparent: the color that is supposed to be transparent( should be RGB Macro )
+void TransparentBmp(string address, double x, double y, double width, double height, UINT crTransparent)
+{
+	int px, py, pwidth, pheight;
+	px = PixelsX(x);
+	py = PixelsY(y);
+	pwidth = PixelsX(width);
+	pheight = PixelsY(height);
+	
+	HBITMAP mBitmap = LoadImage(
+		NULL,
+		address,
+		IMAGE_BITMAP,
+		pwidth,
+		pheight,
+		LR_LOADFROMFILE
+	);
+	SelectObject(mdc, mBitmap);
+	GdiTransparentBlt(
+		osdc,
+		px,pixelHeight - pheight - py,
+		pwidth,
+		pheight,
+		mdc,
+		0,0,
+		pwidth, 
+		pheight,
+		crTransparent
+	);
+	DeleteObject(mBitmap);
 }

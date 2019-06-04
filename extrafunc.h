@@ -18,9 +18,9 @@
 
 //This header contains the declarations of the function added to the graphics.c
 
-//Added Function by Steven Chen
 void StartBatchDraw();
 void EndBatchDraw();
 void ShowBmp(string address, double x, double y, double width, double height, DWORD dwRop);
 bool ReadAllPixels(FILE* fp);
-
+void TranslucentBmp(string originaladdress, string maskaddress, double x, double y, double width, double height, double alpha);
+void TransparentBmp(string address, double x, double y, double width, double height ,UINT crTransparent);

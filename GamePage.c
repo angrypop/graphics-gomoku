@@ -42,6 +42,7 @@ static bool Surrender = FALSE; // store the status of the button SURRENDER
 static void InitGamePage();
 static void Draw();
 static void DrawChessboard();
+static void DrawInstruction();
 static void DrawWhite(int i, int j);
 static void DrawBlack(int i, int j);
 static void DrawInfoBoard();
@@ -57,13 +58,14 @@ static void CheckAI();
 static void CopyBoard(Board* DesB, Board* OriB);
 static void Restart();
 
+
 void GamePage(int function)
 {
 	if (function == GAME_PAGE_PLAY)
 	{
 		// Initialize the GamePage data
 		InitGamePage();
-
+		
 		// register the callback function of Game Page
 		// start the timer for drawing
 		startTimer(PLAY_ID, PLAY_INTERVAL);
@@ -168,8 +170,9 @@ static void TimerEventProcess(int timerID)
 static void Draw()
 {
 	StartBatchDraw();
-
+	
 	DrawChessboard();//Draw Chessboard and Chessmen
+	DrawInstruction();
 	DrawInfoBoard();
 	DrawButtons();
 	DrawMenu();
@@ -197,15 +200,7 @@ static void DrawChessboard()
 		}
 	}
 
-	// Draw the instruction
 	
-	if (LLTail->Board.BoardStatus[Cur.x][Cur.y] == 'N')
-	{
-		SetPenColor("Red");
-		MovePen(CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1 + 0.4) * CHESSBOARD_BOXSIZE,
-			CHESSBOARD_LEFTBOTTOM_Y + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
-		DrawArc(CHESSMAN_SIZE / 2.0, 0, 360);
-	}
 }
 // Function: DrawWhite
 // Parameters: 
@@ -747,4 +742,42 @@ static void Restart()
 	LLHead->Pre = NULL;
 	LLHead->Board = B;
 	LLTail = LLHead;
+}
+// Funciton: DrawInstruction
+// Usage: Draw an instruction of the chessman that is about to be placed
+static void DrawInstruction()
+{
+	// Draw the instruction
+
+	if (LLTail->Board.BoardStatus[Cur.x][Cur.y] == 'N')
+	{
+		//simple implementation of the instruction, by drawing a red circle
+		/*SetPenColor("Red");
+		MovePen(CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1 + 0.4) * CHESSBOARD_BOXSIZE,
+			CHESSBOARD_LEFTBOTTOM_Y + (Cur.y - 1) * CHESSBOARD_BOXSIZE);
+		DrawArc(CHESSMAN_SIZE / 2.0, 0, 360);*/
+		//more complicated implementation, a translucent chessman
+		double ix, iy;
+		// ix, iy is the coordinates of the left-bottom of the chessman
+		ix = CHESSBOARD_LEFTBOTTOM_X + (Cur.x - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
+		iy = CHESSBOARD_LEFTBOTTOM_Y + (Cur.y - 1) * CHESSBOARD_BOXSIZE - CHESSMAN_SIZE / 2.0;
+		if (Setting.UserColor == UC_BLACK)
+		{
+			TranslucentBmp(
+				".\\pictures\\BlackChessman.bmp",
+				".\\pictures\\BlackChessmanMask.bmp",
+				ix, iy,
+				CHESSMAN_SIZE, CHESSMAN_SIZE,
+				0.6);// 0.6 is the degree of being translucent
+		}
+		else
+		{
+			TranslucentBmp(
+				".\\pictures\\WhiteChessman.bmp",
+				".\\pictures\\WhiteChessmanMask.bmp",
+				ix, iy,
+				CHESSMAN_SIZE, CHESSMAN_SIZE,
+				0.6);// 0.6 is the degree of being translucent
+		}
+	}
 }
