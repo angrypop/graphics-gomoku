@@ -2024,10 +2024,8 @@ double ScaleYInches(int y)/*y coordinate from pixels to inches*/
  	  return GetWindowHeight()-(double)y/GetYResolution();
 } 	   
 
-
-// if you want to use it, it would be nice of you
-// to buy a cup of milk tea for the author and acknowledge him
-// only if you know him
+//The following part is added in 2019
+//Added and Modified by CJH's student, in ZJU
 
 // Notice: Declarations are provided by the extrafunc.h
 //		   put the extrafunc.h in the Source Files
@@ -2044,7 +2042,7 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 {
 	//the width and height here are in inches
 	//transfered to pwidth and pheight in pixels
-	//use together with StartBatchDraw and EndBatchDraw
+	//   ***No longer need to ***  use together with StartBatchDraw and EndBatchDraw
 	/*
 	 * mdc           -- buffer DC 
 	 * mosBits         -- Offscreen bitmap
@@ -2078,12 +2076,19 @@ void ShowBmp(string address, double x, double y, double width, double height, DW
 	//Update
 	BitBlt(osdc, px, pWindowHeight - py - pheight, pwidth, pheight, mdc, 0, 0, dwRop);
 	DeleteObject(mosBits);
+
+	//Invalidate the area to be drawn again
+	RECT r;
+	SetRect(&r, px, pixelHeight - pheight - py, pwidth, pheight);
+	InvalidateRect(graphicsWindow, &r, TRUE);
 }
 
 //Batch Drawing :
 // Clear the device at first
 // Draw all of the objects into the buffer DC
 // and update the screen once
+// *******************************
+// NOTICE:in this New Version, Batch Draw is no longer needed for ShowBmp Function
 
 //Function: StartBatchDraw
 //Usage: to start the batch drawing
@@ -2282,7 +2287,10 @@ void TranslucentBmp(string originaladdress, string maskaddress,double x, double 
 		DeleteObject(maskBits);
 		DeleteDC(maskdc);
 	}
-	
+	//Invalidate the area to be drawn again
+	RECT r;
+	SetRect(&r, px, pixelHeight - pheight - py, pwidth, pheight);
+	InvalidateRect(graphicsWindow, &r, TRUE);
 }
 // Function: TransparentBmp
 // Parameters:
@@ -2320,4 +2328,9 @@ void TransparentBmp(string address, double x, double y, double width, double hei
 		crTransparent
 	);
 	DeleteObject(mBitmap);
+
+	//Invalidate the area to be drawn again
+	RECT r;
+	SetRect(&r, px, pixelHeight - pheight - py, pwidth, pheight);
+	InvalidateRect(graphicsWindow, &r, TRUE);
 }

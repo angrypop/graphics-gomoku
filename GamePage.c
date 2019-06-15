@@ -65,7 +65,6 @@ void GamePage(int function)
 	{
 		// Initialize the GamePage data
 		InitGamePage();
-		
 		// register the callback function of Game Page
 		// start the timer for drawing
 		startTimer(PLAY_ID, PLAY_INTERVAL);
@@ -77,7 +76,9 @@ void GamePage(int function)
 	else if (function == GAME_PAGE_REPLAY)
 	{
 		LLTail = LLHead;
+		cancelTimer(PLAY_ID);
 		startTimer(REPLAY_ID, REPLAY_INTERVAL);
+
 		registerTimerEvent(TimerEventProcess);
 	}
 	
@@ -138,7 +139,6 @@ static void TimerEventProcess(int timerID)
 	switch (timerID)
 	{
 	case PLAY_ID:
-		
 		UpdateInfo();
 		Draw();
 		CheckResult();
@@ -147,7 +147,11 @@ static void TimerEventProcess(int timerID)
 		if (LLTail->Next != NULL)
 		{
 			UpdateInfo();
-			Draw();
+			//Draw() without drawing instruction
+			DrawChessboard();//Draw Chessboard and Chessmen
+			DrawInfoBoard();
+			DrawButtons();
+			DrawMenu();
 			CheckResult();
 			LLTail = LLTail->Next;
 		}
@@ -155,8 +159,14 @@ static void TimerEventProcess(int timerID)
 		{
 			// in case the CheckResult fail
 			cancelTimer(REPLAY_ID);
+			Surrender = FALSE;
+			// cancel the callback function in Game Page
 			cancelTimerEvent();
-			exit(-1);
+			cancelKeyboardEvent();
+			cancelMouseEvent();
+
+			// Go to End Game Page with the infomation of surrender
+			EndGamePage(GAME_SURRENDER);
 		}
 	default:
 		break;
@@ -169,15 +179,16 @@ static void TimerEventProcess(int timerID)
 // Usage: Draw the current chessboard, information board, buttons and menu
 static void Draw()
 {
-	StartBatchDraw();
+	//Batch Draw has been out of date
+	//StartBatchDraw();
 	
 	DrawChessboard();//Draw Chessboard and Chessmen
 	DrawInstruction();
 	DrawInfoBoard();
 	DrawButtons();
 	DrawMenu();
-
-	EndBatchDraw();
+	
+	//EndBatchDraw();
 	
 }
 
